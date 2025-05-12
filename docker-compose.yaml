@@ -1,0 +1,71 @@
+services:
+  nginx:
+    image: nginx:stable-alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d:ro
+      - ./certbot/conf:/etc/letsencrypt
+      - ./certbot/www:/var/www/certbot
+      - ./main:/var/www/main:ro
+      - ./storage-app/public:/var/www/storage:ro
+    depends_on:
+      - php
+    restart: unless-stopped
+
+  php:
+    build: ./storage-app
+    volumes:
+      - ./storage-app/public:/var/www/html
+      - ./storage-app/src:/var/www/src:ro
+    expose:
+      - "9000"
+    depends_on:
+      - db
+    restart: unless-stopped
+
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: auth_user
+      POSTGRES_PASSWORD: auth_pass
+      POSTGRES_DB: authdb
+    volumes:
+      - db_data:/var/lib/postgresql/data
+      - ./db/init:/docker-entrypoint-initdb.d:ro
+    restart: unless-stopped
+
+  certbot:
+    image: certbot/certbot
+    volumes:
+      - ./certbot/conf:/etc/letsencrypt
+      - ./certbot/www:/var/www/certbot
+    entrypoint: >
+      sh -c "trap exit TERM;
+             while :; do
+               certbot renew --webroot -w /var/www/certbot --quiet &&
+               nginx -s reload;
+               sleep 12h & wait \$\$!;
+             done"
+    depends_on:
+      - nginx
+
+  node_exporter:
+    image: prom/node-exporter:latest
+    restart: unless-stopped
+    network_mode: host
+    pid: host
+
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:latest
+    restart: unless-stopped
+    network_mode: host
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+
+volumes:
+  db_data:
