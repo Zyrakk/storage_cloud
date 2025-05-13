@@ -2,7 +2,7 @@
   "require": {
     "php": "^8.1",
     "spomky-labs/otphp": "^11.2",
-    "endclothing/prometheus_client_php": "^1.0"
+    "promphp/prometheus_client_php": "^0.3"
   },
   "autoload": {
     "psr-4": {
