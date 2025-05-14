@@ -19,8 +19,9 @@ services:
     build: ./storage-app
     volumes:
       - ./storage-app/public:/var/www/html
-      - ./main:/var/www/main
       - ./storage-app/src:/var/www/src:ro
+      - ./main:/var/www/main
+      - vendor_data:/var/www/html/vendor
       - /mnt/remote_storage:/mnt/remote_storage
     expose:
       - "9000"
@@ -72,3 +73,4 @@ services:
 
 volumes:
   db_data:
+  vendor_data:
