@@ -18,6 +18,7 @@ services:
     build: ./storage-app
     volumes:
       - ./storage-app/public:/var/www/html
+      - ./main:/var/www/main
       - ./storage-app/src:/var/www/src:ro
     expose:
       - "9000"
