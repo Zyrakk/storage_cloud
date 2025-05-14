@@ -1,15 +1,17 @@
 <?php
-// Inicialización global: sesión, autoload, DB y métricas
+// src/init.php
+
+// Inicialización global: sesión, config, autoload, DB y métricas
 session_start();
 require __DIR__ . '/config.php';
 require __DIR__ . '/../vendor/autoload.php';
 
-
 use Prometheus\CollectorRegistry;
 use Prometheus\RenderTextFormat;
-use Prometheus\Storage\InMemory;
 
-// Conexión PDO a PostgreSQL
+// ------------------------------------------------------
+// 1) Conexión PDO a PostgreSQL
+// ------------------------------------------------------
 function getDb(): PDO {
     static $pdo;
     if (!$pdo) {
@@ -25,8 +27,27 @@ function getDb(): PDO {
     return $pdo;
 }
 
-// Métricas Prometheus en memoria
-$registry      = new CollectorRegistry(new InMemory());
-$loginAttempts = $registry->getOrRegisterCounter('auth', 'login_attempts', 'Total login attempts');
-$totpSuccess   = $registry->getOrRegisterCounter('auth', 'totp_success',   'TOTP successes');
-$totpFail      = $registry->getOrRegisterCounter('auth', 'totp_fail',      'TOTP failures');
+// ------------------------------------------------------
+// 2) Métricas Prometheus usando el Default Registry
+// ------------------------------------------------------
+// CollectorRegistry::getDefault() devuelve un singleton
+// ya configurado con el adaptador persistente (APCu/Redis)
+$registry      = CollectorRegistry::getDefault();
+
+$loginAttempts = $registry->getOrRegisterCounter(
+    'auth',               // namespace
+    'login_attempts',     // metric name
+    'Total login attempts'
+);
+
+$totpSuccess   = $registry->getOrRegisterCounter(
+    'auth',
+    'totp_success',
+    'TOTP successes'
+);
+
+$totpFail      = $registry->getOrRegisterCounter(
+    'auth',
+    'totp_fail',
+    'TOTP failures'
+);
