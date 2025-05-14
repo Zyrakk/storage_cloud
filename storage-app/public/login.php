@@ -37,3 +37,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   TOTP (si lo configuraste): <input name="totp"><br>
   <button>Login</button>
 </form>
+?>

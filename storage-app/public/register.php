@@ -18,3 +18,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   Contraseña: <input name="password" type="password" required><br>
   <button>Registrar</button>
 </form>
+?>
