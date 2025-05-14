@@ -21,7 +21,7 @@ services:
       - ./storage-app/public:/var/www/html
       - ./storage-app/src:/var/www/src:ro
       - ./main:/var/www/main
-      - vendor_data:/var/www/html/vendor
+      - vendor_data:/var/www/vendor
       - /mnt/remote_storage:/mnt/remote_storage
     expose:
       - "9000"

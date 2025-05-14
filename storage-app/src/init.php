@@ -4,6 +4,7 @@ session_start();
 require __DIR__ . '/config.php';
 require __DIR__ . '/../vendor/autoload.php';
 
+
 use Prometheus\CollectorRegistry;
 use Prometheus\RenderTextFormat;
 use Prometheus\Storage\InMemory;
