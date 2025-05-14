@@ -23,3 +23,11 @@ COPY . .
 
 # Ajusta permisos
 RUN chown -R www-data:www-data /var/www/html
+
+# PHP.ini overrides para subida de archivos
+RUN { \
+  echo "upload_max_filesize = 1G"; \
+  echo "post_max_size = 1G"; \
+  echo "memory_limit = 2G"; \
+} > /usr/local/etc/php/conf.d/uploads.ini
+

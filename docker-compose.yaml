@@ -10,6 +10,7 @@ services:
       - ./certbot/www:/var/www/certbot
       - ./main:/var/www/main:ro
       - ./storage-app/public:/var/www/storage:ro
+      - /mnt/remote_storage:/mnt/remote_storage:ro
     depends_on:
       - php
     restart: unless-stopped
@@ -20,6 +21,7 @@ services:
       - ./storage-app/public:/var/www/html
       - ./main:/var/www/main
       - ./storage-app/src:/var/www/src:ro
+      - /mnt/remote_storage:/mnt/remote_storage
     expose:
       - "9000"
     depends_on:

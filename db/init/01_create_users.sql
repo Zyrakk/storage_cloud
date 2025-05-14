@@ -1,6 +1,14 @@
-CREATE TABLE IF NOT EXISTS users (
-  id            SERIAL PRIMARY KEY,
-  username      VARCHAR(50) UNIQUE NOT NULL,
-  password_hash VARCHAR(255) NOT NULL,
-  totp_secret   CHAR(32)
+CREATE TABLE users (
+  id SERIAL PRIMARY KEY,
+  username TEXT UNIQUE NOT NULL,
+  password TEXT NOT NULL,
+  totp_secret TEXT        -- NULL si no usa 2FA
+);
+
+CREATE TABLE files (
+  id SERIAL PRIMARY KEY,
+  user_id INTEGER NOT NULL REFERENCES users(id),
+  filename TEXT NOT NULL,
+  path TEXT NOT NULL,
+  uploaded_at TIMESTAMP NOT NULL DEFAULT now()
 );
