@@ -21,7 +21,8 @@ services:
       - REDIS_HOST=redis
       - REDIS_PORT=6379
     volumes:
-      - ./storage-app:/var/www/html
+      - ./storage-app/public:/var/www/html
+      - ./storage-app/src:/var/www/html/src:ro
       - vendor_data:/var/www/html/vendor
       - ./main:/var/www/main
       - /mnt/remote_storage:/mnt/remote_storage
