@@ -19,15 +19,17 @@ $qrUrl = ''; // inicializamos
 
 // Paso 2: preparamos el QR
 if ($step === 2 && isset($_SESSION['reg_user'])) {
-    $ru   = $_SESSION['reg_user'];
-    $totp = TOTP::create($ru['secret']);
+    $ru    = $_SESSION['reg_user'];
+    $totp  = TOTP::create($ru['secret']);
     $totp->setLabel($ru['username']);
     $totp->setIssuer('storage.stefsec.com');
 
     $qrUri = $totp->getProvisioningUri();
+
+    // ** NUEVA LÍNEA **: generamos con QR Server en lugar de Google Charts
     $qrUrl = sprintf(
-        'https://chart.googleapis.com/chart?cht=qr&chs=200x200&chl=%s&choe=UTF-8',
-        rawurlencode($qrUri)
+      'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=%s',
+      rawurlencode($qrUri)
     );
 }
 
@@ -111,25 +113,41 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <?php elseif ($step === 2): ?>
     <h2>Configura tu app de autenticación</h2>
     <p>Escanea este código QR con Google Authenticator, Authy, etc.:</p>
+
     <?php if ($qrUrl): ?>
-      <img src="<?= htmlspecialchars($qrUrl, ENT_QUOTES, 'UTF-8') ?>" alt="QR TOTP">
+      <img
+        src="<?= htmlspecialchars($qrUrl, ENT_QUOTES, 'UTF-8') ?>"
+        alt="Código QR para TOTP"
+        width="200" height="200"
+      >
+
       <form method="POST" action="register.php">
-        <label>Código de tu app:<br>
+        <label>
+          Código de tu app:<br>
           <input name="totp_code" type="text" pattern="\d{6}" required>
-        </label>
+        </label><br><br>
+
         <button type="submit">Finalizar registro</button>
-        <a href="register.php?reset=1">Cancelar y volver</a>
+        <a href="register.php?reset=1" style="margin-left:1em;">Cancelar y volver</a>
       </form>
+
       <!-- Enlace de depuración: ver URL generada -->
-      <p><small>Si no ves el QR, prueba este enlace:<br>
-        <a href="<?= htmlspecialchars($qrUrl, ENT_QUOTES, 'UTF-8') ?>" target="_blank">
-          <?= htmlspecialchars($qrUrl) ?>
+      <p><small>
+        Si no ves el QR, ábrelo en otra pestaña:<br>
+        <a href="<?= htmlspecialchars($qrUrl, ENT_QUOTES, 'UTF-8') ?>"
+          target="_blank" rel="noopener">
+          <?= htmlspecialchars($qrUrl, ENT_QUOTES, 'UTF-8') ?>
         </a>
       </small></p>
+
     <?php else: ?>
-      <p class="error">Error al generar el QR. <a href="register.php?reset=1">Reintentar</a></p>
+      <p class="error">
+        Error al generar el QR.
+        <a href="register.php?reset=1">Reintentar</a>
+      </p>
     <?php endif; ?>
   <?php endif; ?>
+
 
   <p>¿Ya tienes cuenta? <a href="login.php">Inicia sesión</a></p>
 </body>
