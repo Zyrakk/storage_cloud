@@ -17,6 +17,9 @@ services:
 
   php:
     build: ./storage-app
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
     volumes:
       - ./storage-app/public:/var/www/html
       - ./storage-app/src:/var/www/src:ro
@@ -27,14 +30,19 @@ services:
       - "9000"
     depends_on:
       - db
+      - redis
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
     restart: unless-stopped
 
   db:
     image: postgres:15
     environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
     volumes:
       - db_data:/var/lib/postgresql/data
       - ./db/init:/docker-entrypoint-initdb.d:ro
