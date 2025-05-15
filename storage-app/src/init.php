@@ -1,5 +1,4 @@
 <?php
-// src/init.php
 
 // Inicialización global: sesión, configuración, autoload, DB y métricas
 session_start();

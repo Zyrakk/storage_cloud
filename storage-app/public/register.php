@@ -8,10 +8,16 @@ $step  = $_SESSION['reg_step'] ?? 1;
 
 // Si vamos al segundo paso, preparamos la URL del QR
 if ($step === 2 && isset($_SESSION['reg_user'])) {
-    $ru     = $_SESSION['reg_user'];
-    $totp   = TOTP::create($ru['secret'], ['issuer' => 'storage.stefsec.com', 'label' => $ru['username']]);
-    $qrUri  = $totp->getProvisioningUri();
-    $qrUrl  = 'https://chart.googleapis.com/chart?chs=200x200&cht=qr&chl=' . urlencode($qrUri);
+    $ru    = $_SESSION['reg_user'];
+
+    // Creamos el TOTP sobre el secreto que guardamos en sesión
+    $totp = TOTP::create($ru['secret']);
+    $totp->setLabel($ru['username']);
+    $totp->setIssuer('storage.stefsec.com');
+
+    $qrUri = $totp->getProvisioningUri();
+    $qrUrl = 'https://chart.googleapis.com/chart?chs=200x200&cht=qr&chl='
+           . urlencode($qrUri);
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -19,12 +25,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $username = trim($_POST['username'] ?? '');
         $password = $_POST['password'] ?? '';
         $use2fa   = isset($_POST['use_2fa']);
+
         if ($username === '' || $password === '') {
             $error = 'Usuario y contraseña son obligatorios.';
         } elseif ($use2fa) {
             // Paso 2: generar secreto y mostrar QR
-            $totp    = TOTP::create();
-            $secret  = $totp->getSecret();
+            $totp   = TOTP::create();           // genera un secreto nuevo
+            $secret = $totp->getSecret();
+
             $_SESSION['reg_user'] = [
                 'username' => $username,
                 'password' => $password,
@@ -46,8 +54,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $error = 'Sesión de registro expirada.';
             $_SESSION['reg_step'] = 1;
         } else {
-            $ru   = $_SESSION['reg_user'];
-            $totp = TOTP::create($ru['secret'], ['issuer' => 'storage.stefsec.com', 'label' => $ru['username']]);
+            $ru    = $_SESSION['reg_user'];
+            // Recreamos el TOTP igual que antes
+            $totp  = TOTP::create($ru['secret']);
+            $totp->setLabel($ru['username']);
+            $totp->setIssuer('storage.stefsec.com');
+
             if ($totp->verify($code)) {
                 User::create($ru['username'], $ru['password'], $ru['secret']);
                 unset($_SESSION['reg_user'], $_SESSION['reg_step']);
