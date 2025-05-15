@@ -7,26 +7,50 @@ class User {
     public string $password_hash;
     public ?string $totp_secret;
 
+    /* Busca un usuario por username y devuelve un objeto User o null. */
     public static function findByUsername(string $u): ?self {
-        $stmt = \App\getDb()->prepare('SELECT * FROM users WHERE username = ?');
+        // Seleccionamos password AS password_hash para mapear correctamente
+        $stmt = \App\getDb()->prepare(
+            'SELECT id, username, password AS password_hash, totp_secret 
+             FROM users 
+             WHERE username = ?'
+        );
         $stmt->execute([$u]);
         $data = $stmt->fetch(\PDO::FETCH_ASSOC);
-        if (!$data) return null;
+        if (!$data) {
+            return null;
+        }
         $user = new self();
-        foreach ($data as $k => $v) $user->$k = $v;
+        // Rellenamos propiedades
+        $user->id            = (int)$data['id'];
+        $user->username      = $data['username'];
+        $user->password_hash = $data['password_hash'];
+        $user->totp_secret   = $data['totp_secret'];
         return $user;
     }
 
-    public static function create(string $u, string $pw, string $secret): self {
+    /* Crea un nuevo usuario, devuelve el objeto User con su nuevo ID. */
+    public static function create(string $u, string $pw, ?string $secret): self {
         $hash = password_hash($pw, PASSWORD_BCRYPT);
-        $db = \App\getDb();
-        $stmt = $db->prepare('INSERT INTO users (username,password_hash,totp_secret) VALUES (?,?,?) RETURNING id');
-        $stmt->execute([$u, $hash, $secret]);
+        $db   = \App\getDb();
+        // Insertamos en la columna `password`, no `password_hash`
+        $stmt = $db->prepare(
+            'INSERT INTO users (username, password, totp_secret) 
+             VALUES (:username, :password, :secret)
+             RETURNING id'
+        );
+        $stmt->execute([
+            ':username' => $u,
+            ':password' => $hash,
+            ':secret'   => $secret,
+        ]);
+        $newId = (int)$stmt->fetchColumn();
+
         $user = new self();
-        $user->id = (int)$stmt->fetchColumn();
-        $user->username = $u;
+        $user->id            = $newId;
+        $user->username      = $u;
         $user->password_hash = $hash;
-        $user->totp_secret = $secret;
+        $user->totp_secret   = $secret;
         return $user;
     }
 }

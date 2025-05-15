@@ -168,13 +168,13 @@ if (isset($_SESSION['user_id'])) {
 
   <!-- Footer -->
   <footer id="contact">
-    <p>&copy; 2025 Storage. Todos los derechos reservados.</p>
+    <p>&copy; 2025 Stefsec Storage. Todos los derechos reservados.</p>
   </footer>
 
-  <!-- Oculta loader tras mínimo 3s o al cargar -->
+  <!-- Oculta loader tras mínimo 2s o al cargar -->
   <script>
     window.addEventListener('load', () => {
-      const MIN_DURATION = 3000;
+      const MIN_DURATION = 2000;
       const elapsed = Date.now() - window.loaderStart;
       const delay = Math.max(0, MIN_DURATION - elapsed);
       setTimeout(() => {

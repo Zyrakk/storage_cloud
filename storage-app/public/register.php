@@ -1,6 +1,4 @@
 <?php
-// public/register.php
-
 require __DIR__ . '/src/init.php';
 use App\User;
 use OTPHP\TOTP;
