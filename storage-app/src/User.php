@@ -7,10 +7,10 @@ class User {
     public string $password_hash;
     public ?string $totp_secret;
 
-    /* Busca un usuario por username y devuelve un objeto User o null. */
+    /* Busca un usuario por username y devuelve un objeto User o null.*/
     public static function findByUsername(string $u): ?self {
         // Seleccionamos password AS password_hash para mapear correctamente
-        $stmt = \App\getDb()->prepare(
+        $stmt = \getDb()->prepare(
             'SELECT id, username, password AS password_hash, totp_secret 
              FROM users 
              WHERE username = ?'
@@ -21,7 +21,6 @@ class User {
             return null;
         }
         $user = new self();
-        // Rellenamos propiedades
         $user->id            = (int)$data['id'];
         $user->username      = $data['username'];
         $user->password_hash = $data['password_hash'];
@@ -29,11 +28,10 @@ class User {
         return $user;
     }
 
-    /* Crea un nuevo usuario, devuelve el objeto User con su nuevo ID. */
+    /* Crea un nuevo usuario, devuelve el objeto User con su nuevo ID.*/
     public static function create(string $u, string $pw, ?string $secret): self {
         $hash = password_hash($pw, PASSWORD_BCRYPT);
-        $db   = \App\getDb();
-        // Insertamos en la columna `password`, no `password_hash`
+        $db   = \getDb();
         $stmt = $db->prepare(
             'INSERT INTO users (username, password, totp_secret) 
              VALUES (:username, :password, :secret)
