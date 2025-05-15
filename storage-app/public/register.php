@@ -6,18 +6,23 @@ use OTPHP\TOTP;
 $error = '';
 $step  = $_SESSION['reg_step'] ?? 1;
 
-// Si vamos al segundo paso, preparamos la URL del QR
+// Prepara la URL del QR
 if ($step === 2 && isset($_SESSION['reg_user'])) {
     $ru    = $_SESSION['reg_user'];
 
-    // Creamos el TOTP sobre el secreto que guardamos en sesión
+    // 1) Creamos el objeto TOTP
     $totp = TOTP::create($ru['secret']);
     $totp->setLabel($ru['username']);
     $totp->setIssuer('storage.stefsec.com');
 
+    // 2) Obtenemos el URI que Google Charts necesita en 'chl='
     $qrUri = $totp->getProvisioningUri();
-    $qrUrl = 'https://chart.googleapis.com/chart?chs=200x200&cht=qr&chl='
-           . urlencode($qrUri);
+
+    // 3) Codificamos TODO el URI con rawurlencode y añadimos el parámetro choe=UTF-8
+    $qrUrl = sprintf(
+      'https://chart.googleapis.com/chart?cht=qr&chs=200x200&chl=%s&choe=UTF-8',
+      rawurlencode($qrUri)
+    );
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -92,14 +97,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       <button type="submit">Registrar</button>
     </form>
 
-  <?php else: /* paso 2 */ ?>
-    <h2>Configura tu app de autenticación</h2>
-    <p>Escanea este código QR con Google Authenticator o Authy:</p>
-    <img src="<?=$qrUrl?>" alt="QR TOTP"><br><br>
-    <form method="POST">
-      <label>Código de tu app:<br><input name="totp_code" pattern="\d{6}" required></label><br><br>
-      <button type="submit">Finalizar registro</button>
-    </form>
+  <?php elseif ($step === 2): ?>
+  <h2>Configura tu app de autenticación</h2>
+  <p>Escanea este código QR con Google Authenticator o Authy:</p>
+  <!-- 4) Escapea la URL para el src -->
+  <img src="<?= htmlspecialchars($qrUrl, ENT_QUOTES, 'UTF-8') ?>" alt="QR TOTP"><br><br>
+  <form method="POST">
+    <label>Código de tu app:<br>
+      <input name="totp_code" pattern="\d{6}" required>
+    </label><br><br>
+    <button type="submit">Finalizar registro</button>
+  </form>
   <?php endif; ?>
 
   <p>¿Ya tienes cuenta? <a href="login.php">Inicia sesión</a></p>
