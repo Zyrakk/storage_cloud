@@ -1,6 +1,6 @@
 <?php
 // public/logout.php
-require __DIR__ . '/../src/init.php';
+require __DIR__ . '/src/init.php';
 
 // Limpio y destruyo sesión
 $_SESSION = [];
