@@ -9,7 +9,7 @@ services:
       - ./certbot/conf:/etc/letsencrypt
       - ./certbot/www:/var/www/certbot
       - ./main:/var/www/main:ro
-      - ./storage-app/public:/var/www/storage:ro
+      - ./storage-app/public:/var/www/html:ro
       - /mnt/remote_storage:/mnt/remote_storage:ro
     depends_on:
       - php
@@ -21,10 +21,9 @@ services:
       - REDIS_HOST=redis
       - REDIS_PORT=6379
     volumes:
-      - ./storage-app/public:/var/www/html
-      - ./storage-app/src:/var/www/src:ro
+      - ./storage-app:/var/www/html
+      - vendor_data:/var/www/html/vendor
       - ./main:/var/www/main
-      - vendor_data:/var/www/vendor
       - /mnt/remote_storage:/mnt/remote_storage
     expose:
       - "9000"

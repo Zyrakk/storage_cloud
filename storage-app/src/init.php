@@ -1,11 +1,9 @@
 <?php
-// src/init.php
-
 // Inicialización global: sesión, config, autoload, DB y métricas
 session_start();
 
-require __DIR__ . '/config.php';
-require __DIR__ . '/../vendor/autoload.php';
+require __DIR__ . '/vendor/autoload.php';
+require __DIR__ . '/src/init.php';
 
 use Prometheus\CollectorRegistry;
 use Prometheus\RenderTextFormat;

@@ -1,5 +1,5 @@
 <?php
-#require __DIR__ . '/../src/init.php';
+require __DIR__ . '/../src/init.php';
 
 // Si ya hay sesión, vamos al panel
 if (isset($_SESSION['user_id'])) {
