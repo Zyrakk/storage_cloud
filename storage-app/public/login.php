@@ -16,10 +16,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $user = User::findByUsername($username);
     if ($user && password_verify($password, $user->password_hash)) {
         if ($user->totp_secret) {
-            $totp = TOTP::create(
-                $user->totp_secret,
-                ['issuer' => 'storage.stefsec.com', 'label' => $username]
-            );
+            // Creamos el objeto TOTP solo con el secreto
+            $totp = TOTP::create($user->totp_secret);
+            $totp->setLabel($username);
+            $totp->setIssuer('storage.stefsec.com');
+
             if (!$totp->verify($totpCode)) {
                 $totpFail->inc();
                 $error = 'Código TOTP incorrecto.';
@@ -44,20 +45,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <html lang="es">
 <head>
   <meta charset="utf-8">
-  <title>Iniciar sesión</title>
+  <title>Iniciar sesión · Storage</title>
+  <style>
+    body { font-family: sans-serif; padding: 20px; max-width: 400px; margin: auto; }
+    form label { display: block; margin-bottom: 10px; }
+    .error { color: red; }
+    button { margin-top: 10px; }
+  </style>
 </head>
 <body>
   <h1>Iniciar sesión</h1>
+
   <?php if ($error): ?>
-    <p style="color:red;"><?=htmlspecialchars($error)?></p>
+    <p class="error"><?= htmlspecialchars($error) ?></p>
   <?php endif; ?>
 
-  <form method="POST">
-    <label>Usuario:<br><input name="username" type="text" required></label><br><br>
-    <label>Contraseña:<br><input name="password" type="password" required></label><br><br>
+  <form method="POST" action="login.php">
+    <label>Usuario:<br>
+      <input name="username" type="text" required>
+    </label>
+    <label>Contraseña:<br>
+      <input name="password" type="password" required>
+    </label>
     <label>Código TOTP (si lo activaste):<br>
       <input name="totp_code" type="text" pattern="\d{6}" placeholder="Opcional">
-    </label><br><br>
+    </label>
     <button type="submit">Entrar</button>
   </form>
 
