@@ -157,11 +157,21 @@ if (isset($_SESSION['user_id'])) {
       .nav-links .btn {
         white-space: nowrap;
       }
-      /* Opcional: esconder la scrollbar */
+      /* Esconder la scrollbar */
       .nav-links::-webkit-scrollbar {
         display: none;
       }
-      
+      /* Sólo mostrar los botones en móvil */
+      .nav-links li a:not(.btn) {
+        display: none;
+      }
+      /* Asegurarnos de que los botones ocupen todo el ancho */
+      .nav-links .btn,
+      .nav-links .btn.primary {
+        flex: 1 0 auto;
+        text-align: center;
+      }
+
       /* Hero: columna y ajuste de padding */
       .hero {
         flex-direction: column;
