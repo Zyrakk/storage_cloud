@@ -43,6 +43,8 @@ $usedPercent = $quotaGB > 0 ? min(100, round($usedGB / $quotaGB * 100)) : 0;
   <title>Mi Panel · Storage</title>
   <!-- Google Font -->
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
+  <!-- Loader CSS separado -->
+  <link rel="stylesheet" href="./css/loader.css">
   <style>
     :root {
       --gradient-bg: linear-gradient(135deg, #0b0e13, #161a22);
@@ -99,9 +101,31 @@ $usedPercent = $quotaGB > 0 ? min(100, round($usedGB / $quotaGB * 100)) : 0;
     .stat-value{font-size:2.5rem;font-weight:600;margin-top:0.25rem}
     .quota-bar{width:100%;height:8px;background:var(--quota-bg);border-radius:4px;overflow:hidden;margin-top:1rem}
     .quota-fill{height:100%;width:<?= $usedPercent ?>%;background:var(--quota-fill);transition:width 0.5s ease}
+
+    /* Responsive Mobile */
+    @media (max-width: 768px) {
+      body { padding: 1rem; }
+      .dashboard-container {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+      }
+      .welcome { grid-column: auto; flex-direction: column; align-items: flex-start; }
+      .files-list { grid-column: auto; }
+      .right-column { grid-column: auto; flex-direction: column; }
+      .card { padding: 1.5rem; }
+      h1 { font-size: 1.5rem; }
+      .files-list table, th, td { font-size: 0.85rem; }
+      .btn-logout, .file-btn, .upload button, .btn-action { width: 100%; text-align: center; }
+      .metrics { padding: 1.5rem; }
+      .stat-value { font-size: 2rem; }
+    }
   </style>
 </head>
 <body>
+  <script>window.loaderStart = Date.now();</script>
+  <div id="loader-overlay"><div class="loader-text">STORAGE</div></div>
+
   <div class="dashboard-container">
     <!-- Welcome -->
     <div class="card welcome">
@@ -160,5 +184,17 @@ $usedPercent = $quotaGB > 0 ? min(100, round($usedGB / $quotaGB * 100)) : 0;
       </div>
     </div>
   </div>
+  <script>
+    window.addEventListener('load', () => {
+      const MIN_DURATION = 2000;
+      const elapsed = Date.now() - window.loaderStart;
+      const delay = Math.max(0, MIN_DURATION - elapsed);
+      setTimeout(() => {
+        const loader = document.getElementById('loader-overlay');
+        loader.style.opacity = '0';
+        setTimeout(() => loader.style.display = 'none', 500);
+      }, delay);
+    });
+  </script>
 </body>
 </html>
