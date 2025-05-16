@@ -132,14 +132,15 @@ if (isset($_SESSION['user_id'])) {
 
     /* Ajustes generales para móvil */
     @media (max-width: 768px) {
+      /* Header más compacto */
       header {
-        padding: 1.25rem 0;
+        padding: 0.75rem 0;
       }
       .navbar {
         padding: 0 1rem;
       }
 
-      /* Menú inline-scrollable */
+      /* Menú en fila scrollable */
       .nav-links {
         display: flex !important;
         flex-direction: row !important;
@@ -148,51 +149,71 @@ if (isset($_SESSION['user_id'])) {
         -webkit-overflow-scrolling: touch;
         gap: 0.5rem;
         margin: 0 1rem;
-        padding: 0.75rem 0;
+        padding: 0.5rem 0;
         background: transparent;
-      }
-      .nav-links li {
-        flex: 0 0 auto;
       }
       .nav-links::-webkit-scrollbar {
         display: none;
       }
+      .nav-links li {
+        flex: 0 0 auto;
+      }
 
-      /* Solo los botones y ocupar ancho suficiente */
+      /* Sólo los botones, reducidos */
       .nav-links li a:not(.btn) {
         display: none;
       }
       .nav-links .btn {
-        flex: none;
-        padding: 0.6rem 1rem;
-        line-height: 1.2;
+        padding: 0.3rem 0.8rem;     /* menos alto y menos ancho */
+        font-size: 0.85rem;         /* fuente más pequeña */
+        border-radius: 12px;        /* menos radio para que no corte */
+        border-width: 1px;          /* borde más fino */
         white-space: nowrap;
       }
+      .nav-links .btn.primary {
+        background: var(--clr-accent1);
+        border-color: var(--clr-accent1);
+      }
+      .nav-links .btn.primary:hover {
+        background: var(--clr-accent2);
+        border-color: var(--clr-accent2);
+      }
 
-      /* Hero como antes */
+      /* Hero en columna */
       .hero {
         flex-direction: column;
-        padding: 6rem 1rem 2rem;
+        padding: 6rem 1rem 1.5rem;
         gap: 1rem;
       }
+      .hero-content h1 { font-size: 1.75rem; }
+      .hero-content p  { font-size: 0.95rem; }
       .hero-content .btn {
-        margin-bottom: 0.75rem;
+        display: block;
+        width: 100%;
+        margin: 0 0 0.75rem;
+        padding: 0.6rem 1rem;
+        font-size: 0.9rem;
       }
+      .hero-image { max-width: 100%; order: -1; }
 
-      /* Features */
+      /* Features columna */
       .features {
         padding: 2rem 1rem;
       }
       .feature-grid {
         grid-template-columns: 1fr !important;
+        gap: 1rem;
       }
+      .icon-wrapper { width: 100px; height: 100px; }
+      .feature h3 { font-size: 1.125rem; }
+      .feature p  { font-size: 0.9rem; }
 
-      /* Footer */
+      /* Footer compacto */
       footer {
         padding: 1rem;
+        font-size: 0.8rem;
       }
     }
-
 
   </style>
 </head>
