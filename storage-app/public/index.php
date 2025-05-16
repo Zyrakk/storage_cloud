@@ -130,23 +130,39 @@ if (isset($_SESSION['user_id'])) {
     /* Footer */
     footer { padding:2rem; text-align:center; color:var(--clr-gray); font-size:0.9rem; }
 
-    /* Responsive Mobile */
+    /* Ajustes generales para móvil */
     @media (max-width: 768px) {
-      /* Navbar */
+      /* Navbar: apilar y ensanchar los enlaces */
       .navbar {
         flex-direction: column;
+        align-items: flex-start;
         padding: 1rem;
       }
       .nav-links {
         flex-direction: column;
-        gap: 1rem;
-        margin-top: 0.5rem;
+        width: 100%;
+        margin: 1rem 0 0;
+        gap: 0.5rem;
+        background: rgba(0,0,0,0.5);
+        padding: 1rem;
+        border-radius: 8px;
       }
-      /* Hero */
+      .nav-links li {
+        width: 100%;
+      }
+      .nav-links .btn {
+        width: 100%;
+        text-align: center;
+      }
+
+      /* Hero: columna y ajuste de padding */
       .hero {
         flex-direction: column;
-        padding: 4rem 1rem 2rem;
+        padding: 6rem 1rem 2rem;
         gap: 1.5rem;
+      }
+      .hero-content {
+        text-align: center;
       }
       .hero-content h1 {
         font-size: 2rem;
@@ -155,20 +171,25 @@ if (isset($_SESSION['user_id'])) {
         font-size: 1rem;
       }
       .hero-content .btn {
+        display: block;
         width: 100%;
-        text-align: center;
-        margin-bottom: 0.75rem;
+        margin: 0 0 1rem;
       }
       .hero-image {
         max-width: 100%;
+        order: -1; /* opción: imagen arriba */
       }
-      /* Features */
+
+      /* Features en una sola columna */
       .features {
         padding: 2rem 1rem;
       }
       .feature-grid {
         grid-template-columns: 1fr !important;
         gap: 1rem;
+      }
+      .feature {
+        padding: 2rem 1rem;
       }
       .icon-wrapper {
         width: 120px;
@@ -180,13 +201,13 @@ if (isset($_SESSION['user_id'])) {
       .feature p {
         font-size: 0.9rem;
       }
-      /* Footer */
+
+      /* Footer más compacto */
       footer {
         padding: 1rem;
         font-size: 0.8rem;
       }
     }
-
   </style>
 </head>
 <body>
