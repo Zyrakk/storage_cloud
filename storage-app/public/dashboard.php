@@ -7,7 +7,12 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 $userId = (int) $_SESSION['user_id'];
-$pdo = getDb();
+$pdo    = getDb();
+
+// Obtenemos el nombre de usuario
+$stmtUser = $pdo->prepare('SELECT username FROM users WHERE id = ?');
+$stmtUser->execute([$userId]);
+$username = $stmtUser->fetchColumn() ?: 'Usuario';
 
 // Flash messages
 $uploadError   = $_SESSION['upload_error']   ?? null; unset($_SESSION['upload_error']);
@@ -19,8 +24,17 @@ $stmt = $pdo->prepare(
     'SELECT id, filename, path, uploaded_at FROM files WHERE user_id = ? ORDER BY uploaded_at DESC'
 );
 $stmt->execute([$userId]);
-$files = $stmt->fetchAll();
+$files     = $stmt->fetchAll();
 $fileCount = count($files);
+
+// Calculate storage used
+$stmtQuota = $pdo->prepare('SELECT COALESCE(SUM(size),0) FROM files WHERE user_id = ?');
+$stmtQuota->execute([$userId]);
+$usedBytes = (int)$stmtQuota->fetchColumn();
+
+// Convert to GB
+$usedGB  = round($usedBytes    / (1024 ** 3), 2);
+$quotaGB = round(USER_QUOTA_BYTES / (1024 ** 3), 2);
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -30,6 +44,8 @@ $fileCount = count($files);
   <title>Mi Panel · Storage</title>
   <!-- Google Font -->
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
+  <!-- Loader CSS separado -->
+  <link rel="stylesheet" href="./css/loader.css">
   <style>
     :root {
       --gradient-bg: linear-gradient(135deg, #0b0e13, #161a22);
@@ -55,6 +71,7 @@ $fileCount = count($files);
     .dashboard-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
+      grid-template-rows: auto auto;
       gap: 2rem;
       width: 100%;
       max-width: 1200px;
@@ -65,7 +82,6 @@ $fileCount = count($files);
       border-radius: 16px;
       padding: 2rem;
       box-shadow: 0 16px 48px rgba(0,0,0,0.6);
-      position: relative;
     }
     .card h2 { margin-bottom:1rem; font-size:1.5rem; color:var(--text-light) }
 
@@ -87,36 +103,35 @@ $fileCount = count($files);
     .btn-logout:hover { background: var(--accent-dark) }
 
     /* Upload Card */
-    .upload form { display: flex; flex-direction: column }
+    .upload form { display:flex; flex-direction:column }
     .file-btn {
-      display: inline-block;
-      padding: 0.5rem 1rem;
-      border: 2px solid var(--accent);
-      background: var(--accent);
-      color: var(--text-light);
-      border-radius: 50px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background 0.3s;
-      margin-bottom: 1rem;
-      text-align: center;
+      display:inline-block;
+      padding:0.5rem 1rem;
+      border:2px solid var(--accent);
+      background:var(--accent);
+      color:var(--text-light);
+      border-radius:50px;
+      font-weight:600;
+      cursor:pointer;
+      transition:background 0.3s;
+      margin-bottom:1rem;
+      text-align:center;
     }
-    .file-btn:hover { background: var(--accent-dark) }
-    .file-btn input { display: none }
+    .file-btn input { display:none }
     .upload button {
-      align-self: flex-start;
-      padding: 0.5rem 1rem;
-      border: 2px solid var(--accent);
-      background: transparent;
-      color: var(--accent);
-      border-radius: 50px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background 0.3s, color 0.3s;
+      align-self:flex-start;
+      padding:0.5rem 1rem;
+      border:2px solid var(--accent);
+      background:transparent;
+      color:var(--accent);
+      border-radius:50px;
+      font-weight:600;
+      cursor:pointer;
+      transition:background 0.3s,color 0.3s;
     }
     .upload button:hover {
-      background: var(--accent);
-      color: var(--text-light);
+      background:var(--accent);
+      color:var(--text-light);
     }
     .upload .error { color: var(--error-color); margin-top:1rem }
 
@@ -124,8 +139,7 @@ $fileCount = count($files);
     .files-list .error { color: var(--error-color); margin-bottom:1rem }
     .files-list .success { color: var(--success-color); margin-bottom:1rem }
     .files-list table {
-      width:100%;
-      border-collapse:collapse;
+      width:100%; border-collapse:collapse;
     }
     .files-list th, .files-list td {
       padding:0.75rem;
@@ -149,32 +163,19 @@ $fileCount = count($files);
       display:inline-block;
     }
     .btn-download {
-      background: var(--accent);
-      color: var(--text-light);
+      background:var(--accent);
+      color:var(--text-light);
     }
-    .btn-download:hover {
-      background: var(--accent-dark);
-    }
+    .btn-download:hover { background:var(--accent-dark) }
     .btn-delete {
-      background: var(--error-color);
-      color: var(--text-light);
+      background:var(--error-color);
+      color:var(--text-light);
     }
-    .btn-delete:hover {
-      background: #c0392b;
-    }
+    .btn-delete:hover { background:#c0392b }
 
     /* Metrics Card */
-    .metrics {
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      justify-content:center;
-    }
-    .metric-value {
-      font-size:3rem;
-      font-weight:600;
-      margin-top:0.5rem;
-    }
+    .metrics { display:flex; flex-direction:column; align-items:center; justify-content:center; }
+    .metric-value { font-size:3rem; font-weight:600; margin-top:0.5rem; }
   </style>
 </head>
 <body>
@@ -182,7 +183,7 @@ $fileCount = count($files);
     <!-- Bienvenida -->
     <div class="card welcome">
       <div class="welcome-header">
-        <h2>Bienvenido, usuario #<?= htmlspecialchars($userId) ?></h2>
+        <h2>Bienvenido, <?= htmlspecialchars($username) ?></h2>
         <a href="logout.php" class="btn-logout">Cerrar sesión</a>
       </div>
       <p>Administra tus archivos de manera sencilla.</p>
@@ -211,11 +212,7 @@ $fileCount = count($files);
       <?php endif; ?>
       <table>
         <thead>
-          <tr>
-            <th>Archivo</th>
-            <th>Fecha</th>
-            <th>Acción</th>
-          </tr>
+          <tr><th>Archivo</th><th>Fecha</th><th>Acción</th></tr>
         </thead>
         <tbody>
           <?php foreach ($files as $f): ?>
@@ -234,11 +231,29 @@ $fileCount = count($files);
         </tbody>
       </table>
     </div>
-    <!-- Métricas -->
+    <!-- Espacio utilizado -->
     <div class="card metrics">
       <h2>Total de archivos</h2>
-      <div class="metric-value"><?= $fileCount ?></div>
+      <div class="metric-value">
+        <?= $fileCount ?>
+      </div>
+      <h2>Espacio utilizado</h2>
+      <div class="metric-value">
+        <?= $usedGB ?> GB de <?= $quotaGB ?> GB
+      </div>
     </div>
   </div>
+  <script>
+    window.addEventListener('load', () => {
+      const MIN_DURATION = 2000;
+      const elapsed = Date.now() - window.loaderStart;
+      const delay = Math.max(0, MIN_DURATION - elapsed);
+      setTimeout(() => {
+        const loader = document.getElementById('loader-overlay');
+        loader.style.opacity = '0';
+        setTimeout(() => loader.style.display = 'none', 500);
+      }, delay);
+    });
+  </script>
 </body>
 </html>

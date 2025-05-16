@@ -5,6 +5,8 @@ define('UPLOAD_PATH', getenv('UPLOAD_PATH') ?: '/mnt/remote_storage');
 
 // Límite máximo de subida por archivo
 define('MAX_UPLOAD_SIZE', 1 * 1024 * 1024 * 1024); // 1 GB
+// Límite de almacenamiento por usuario
+define('USER_QUOTA_BYTES', 10 * 1024 * 1024 * 1024); // 10 GB
 
 // Parámetros de conexión
 define('DB_HOST',     getenv('DB_HOST')     ?: 'db');
