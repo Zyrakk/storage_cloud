@@ -174,8 +174,21 @@ $quotaGB = round(USER_QUOTA_BYTES / (1024 ** 3), 2);
     .btn-delete:hover { background:#c0392b }
 
     /* Metrics Card */
-    .metrics { display:flex; flex-direction:column; align-items:center; justify-content:center; }
-    .metric-value { font-size:3rem; font-weight:600; margin-top:0.5rem; }
+    .metrics {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;            /* espacio entre las dos métricas */
+      align-items: center;
+      justify-content: center;
+    }
+    .metric-group h2 {
+      margin-bottom: 0.5rem;
+      font-size: 1.25rem;
+    }
+    .metric-value {
+      font-size: 2.5rem;
+      font-weight: 600;
+    }
   </style>
 </head>
 <body>
@@ -231,15 +244,18 @@ $quotaGB = round(USER_QUOTA_BYTES / (1024 ** 3), 2);
         </tbody>
       </table>
     </div>
-    <!-- Espacio utilizado -->
+    <!-- Métricas -->
     <div class="card metrics">
-      <h2>Total de archivos</h2>
-      <div class="metric-value">
-        <?= $fileCount ?>
+      <div class="metric-group">
+        <h2>Total de archivos</h2>
+        <div class="metric-value"><?= $fileCount ?></div>
       </div>
-      <h2>Espacio utilizado</h2>
-      <div class="metric-value">
-        <?= $usedGB ?> GB de <?= $quotaGB ?> GB
+
+      <div class="metric-group">
+        <h2>Espacio utilizado</h2>
+        <div class="metric-value">
+          <?= $usedGB ?> GB de <?= $quotaGB ?> GB
+        </div>
       </div>
     </div>
   </div>
