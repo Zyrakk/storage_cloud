@@ -129,6 +129,64 @@ if (isset($_SESSION['user_id'])) {
 
     /* Footer */
     footer { padding:2rem; text-align:center; color:var(--clr-gray); font-size:0.9rem; }
+
+    /* Responsive Mobile */
+    @media (max-width: 768px) {
+      /* Navbar */
+      .navbar {
+        flex-direction: column;
+        padding: 1rem;
+      }
+      .nav-links {
+        flex-direction: column;
+        gap: 1rem;
+        margin-top: 0.5rem;
+      }
+      /* Hero */
+      .hero {
+        flex-direction: column;
+        padding: 4rem 1rem 2rem;
+        gap: 1.5rem;
+      }
+      .hero-content h1 {
+        font-size: 2rem;
+      }
+      .hero-content p {
+        font-size: 1rem;
+      }
+      .hero-content .btn {
+        width: 100%;
+        text-align: center;
+        margin-bottom: 0.75rem;
+      }
+      .hero-image {
+        max-width: 100%;
+      }
+      /* Features */
+      .features {
+        padding: 2rem 1rem;
+      }
+      .feature-grid {
+        grid-template-columns: 1fr !important;
+        gap: 1rem;
+      }
+      .icon-wrapper {
+        width: 120px;
+        height: 120px;
+      }
+      .feature h3 {
+        font-size: 1.125rem;
+      }
+      .feature p {
+        font-size: 0.9rem;
+      }
+      /* Footer */
+      footer {
+        padding: 1rem;
+        font-size: 0.8rem;
+      }
+    }
+
   </style>
 </head>
 <body>
