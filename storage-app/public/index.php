@@ -132,6 +132,16 @@ if (isset($_SESSION['user_id'])) {
 
     /* Ajustes generales para móvil */
     @media (max-width: 768px) {
+      html, body {
+        overflow-x: hidden;
+      }
+      .hero,
+      .features,
+      .feature-grid {
+        max-width: 100%;
+        padding: 0 1rem;
+        box-sizing: border-box;
+      }
       /* Header más compacto */
       header {
         padding: 0.75rem 0;
