@@ -213,6 +213,10 @@ if (isset($_SESSION['user_id'])) {
         padding: 1rem;
         font-size: 0.8rem;
       }
+      /* Ocultar botones de auth arriba */
+      .nav-links .btn {
+        display: none;
+      }
     }
 
   </style>
