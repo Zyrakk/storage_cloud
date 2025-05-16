@@ -10,37 +10,181 @@ $pdo = getDb();
 $stmt = $pdo->prepare('SELECT id, filename, path, uploaded_at FROM files WHERE user_id = ? ORDER BY uploaded_at DESC');
 $stmt->execute([$_SESSION['user_id']]);
 $files = $stmt->fetchAll();
+$fileCount = count($files);
 ?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="utf-8">
-  <title>Mi Panel</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mi Panel · Storage</title>
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --gradient-bg: linear-gradient(135deg, #0b0e13, #161a22);
+      --card-bg: rgba(255,255,255,0.04);
+      --accent: #2398f6;
+      --accent-dark: #8e44ad;
+      --text-light: #ffffff;
+      --text-muted: #b0bac5;
+    }
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background: var(--gradient-bg);
+      color: var(--text-light);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      grid-template-rows: repeat(2, auto);
+      gap: 2rem;
+      width: 100%;
+      max-width: 1200px;
+    }
+    .card {
+      background: var(--card-bg);
+      backdrop-filter: blur(10px);
+      border-radius: 16px;
+      padding: 2rem;
+      box-shadow: 0 16px 48px rgba(0,0,0,0.6);
+    }
+    .card h2 {
+      margin-bottom: 1rem;
+      font-size: 1.5rem;
+      color: var(--text-light);
+    }
+    /* Welcome Card */
+    .welcome {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: space-between;
+    }
+    .welcome p {
+      margin-bottom: 1rem;
+    }
+    .btn-logout {
+      padding: 0.5rem 1rem;
+      border: 2px solid var(--accent);
+      background: var(--accent);
+      color: var(--text-light);
+      border-radius: 50px;
+      font-weight: 600;
+      transition: background 0.3s;
+    }
+    .btn-logout:hover {
+      background: var(--accent-dark);
+    }
+    /* Upload Card */
+    .upload input[type=file] {
+      width: 100%;
+      padding: 0.5rem;
+      margin-bottom: 1rem;
+      border-radius: 8px;
+      background: rgba(255,255,255,0.1);
+      color: var(--text-light);
+      border: none;
+    }
+    .upload button {
+      padding: 0.5rem 1rem;
+      border: 2px solid var(--accent);
+      background: var(--accent);
+      color: var(--text-light);
+      border-radius: 50px;
+      font-weight: 600;
+      transition: background 0.3s;
+    }
+    .upload button:hover {
+      background: var(--accent-dark);
+    }
+    /* Files List Card */
+    .files-list table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .files-list th, .files-list td {
+      padding: 0.75rem;
+      text-align: left;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      font-size: 0.95rem;
+      color: var(--text-muted);
+    }
+    .files-list th { color: var(--text-light); }
+    .files-list tbody tr:hover {
+      background: rgba(255,255,255,0.05);
+    }
+    .files-list a {
+      color: var(--accent);
+      font-weight: 500;
+      transition: color 0.3s;
+    }
+    .files-list a:hover {
+      color: var(--accent-dark);
+    }
+    /* Metrics Card */
+    .metrics {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .metrics .metric-value {
+      font-size: 2.5rem;
+      font-weight: 600;
+      margin-top: 0.5rem;
+    }
+  </style>
 </head>
 <body>
-  <h1>Bienvenido, usuario #<?=htmlspecialchars($_SESSION['user_id'])?></h1>
-  <p><a href="logout.php">Cerrar sesión</a></p>
-
-  <h2>Subir archivo</h2>
-  <form action="upload.php" method="POST" enctype="multipart/form-data">
-    <input type="file" name="file" required>
-    <button type="submit">Subir</button>
-  </form>
-
-  <h2>Mis archivos</h2>
-  <?php if (!empty($_SESSION['upload_error'])): ?>
-    <p style="color:red;"><?= htmlspecialchars($_SESSION['upload_error']) ?></p>
-    <?php unset($_SESSION['upload_error']); ?>
-  <?php endif; ?>
-
-  <ul>
-    <?php foreach ($files as $f): ?>
-      <li>
-        <?=htmlspecialchars($f['filename'])?> —
-        <a href="/uploads/<?=urlencode($f['path'])?>" download>Descargar</a>
-        (<?=htmlspecialchars(substr($f['uploaded_at'],0,19))?>)
-      </li>
-    <?php endforeach; ?>
-  </ul>
+  <div class="dashboard-grid">
+    <!-- Bienvenida -->
+    <div class="card welcome">
+      <h2>Bienvenido, usuario #<?=htmlspecialchars($_SESSION['user_id'])?></h2>
+      <p>Administra tus archivos de manera sencilla.</p>
+      <a class="btn-logout" href="logout.php">Cerrar sesión</a>
+    </div>
+    <!-- Subir archivo -->
+    <div class="card upload">
+      <h2>Subir archivo</h2>
+      <form action="upload.php" method="POST" enctype="multipart/form-data">
+        <input type="file" name="file" required>
+        <button type="submit">Subir</button>
+      </form>
+    </div>
+    <!-- Lista de archivos -->
+    <div class="card files-list">
+      <h2>Mis archivos</h2>
+      <?php if (!empty($_SESSION['upload_error'])): ?>
+        <div class="error"><?=htmlspecialchars($_SESSION['upload_error'])?></div>
+        <?php unset($_SESSION['upload_error']); ?>
+      <?php endif; ?>
+      <table>
+        <thead>
+          <tr><th>Archivo</th><th>Fecha</th><th>Acción</th></tr>
+        </thead>
+        <tbody>
+          <?php foreach ($files as $f): ?>
+          <tr>
+            <td><?=htmlspecialchars($f['filename'])?></td>
+            <td><?=htmlspecialchars(substr($f['uploaded_at'],0,19))?></td>
+            <td><a href="/uploads/<?=urlencode($f['path'])?>" download>Descargar</a></td>
+          </tr>
+          <?php endforeach; ?>
+        </tbody>
+      </table>
+    </div>
+    <!-- Métricas -->
+    <div class="card metrics">
+      <h2>Total de archivos</h2>
+      <div class="metric-value"><?=$fileCount?></div>
+    </div>
+  </div>
 </body>
 </html>
