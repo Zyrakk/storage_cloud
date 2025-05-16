@@ -15,12 +15,9 @@ $deleteError   = $_SESSION['delete_error']   ?? null; unset($_SESSION['delete_er
 $deleteSuccess = $_SESSION['delete_success'] ?? null; unset($_SESSION['delete_success']);
 
 // Fetch files
-$stmt = $pdo->prepare('
-    SELECT id, filename, path, uploaded_at
-    FROM files
-    WHERE user_id = ?
-    ORDER BY uploaded_at DESC
-');
+$stmt = $pdo->prepare(
+    'SELECT id, filename, path, uploaded_at FROM files WHERE user_id = ? ORDER BY uploaded_at DESC'
+);
 $stmt->execute([$userId]);
 $files = $stmt->fetchAll();
 $fileCount = count($files);
@@ -41,8 +38,10 @@ $fileCount = count($files);
       --accent-dark: #8e44ad;
       --text-light: #ffffff;
       --text-muted: #b0bac5;
+      --error-color: #e74c3c;
+      --success-color: #2ecc71;
     }
-    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    *,*::before,*::after { margin:0; padding:0; box-sizing:border-box }
     body {
       font-family: 'Montserrat', sans-serif;
       background: var(--gradient-bg);
@@ -55,8 +54,7 @@ $fileCount = count($files);
     }
     .dashboard-grid {
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      grid-template-rows: repeat(2, auto);
+      grid-template-columns: 1fr 1fr;
       gap: 2rem;
       width: 100%;
       max-width: 1200px;
@@ -67,11 +65,14 @@ $fileCount = count($files);
       border-radius: 16px;
       padding: 2rem;
       box-shadow: 0 16px 48px rgba(0,0,0,0.6);
+      position: relative;
     }
-    .card h2 {
-      margin-bottom: 1rem;
-      font-size: 1.5rem;
-      color: var(--text-light);
+    .card h2 { margin-bottom:1rem; font-size:1.5rem; color:var(--text-light) }
+
+    /* Welcome Card */
+    .welcome { display:flex; flex-direction:column; justify-content:space-between }
+    .welcome-header {
+      display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;
     }
     .btn-logout {
       padding: 0.5rem 1rem;
@@ -83,70 +84,96 @@ $fileCount = count($files);
       transition: background 0.3s;
       text-decoration: none;
     }
-    .btn-logout:hover {
-      background: var(--accent-dark);
-    }
-    .upload input[type=file] {
-      width: 100%;
-      padding: 0.5rem;
-      margin-bottom: 1rem;
-      border-radius: 8px;
-      background: rgba(255,255,255,0.1);
-      color: var(--text-light);
-      border: none;
-    }
-    .upload button {
+    .btn-logout:hover { background: var(--accent-dark) }
+
+    /* Upload Card */
+    .upload form { display: flex; flex-direction: column }
+    .file-btn {
+      display: inline-block;
       padding: 0.5rem 1rem;
       border: 2px solid var(--accent);
       background: var(--accent);
       color: var(--text-light);
       border-radius: 50px;
       font-weight: 600;
+      cursor: pointer;
       transition: background 0.3s;
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+    .file-btn:hover { background: var(--accent-dark) }
+    .file-btn input { display: none }
+    .upload button {
+      align-self: flex-start;
+      padding: 0.5rem 1rem;
+      border: 2px solid var(--accent);
+      background: transparent;
+      color: var(--accent);
+      border-radius: 50px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.3s, color 0.3s;
     }
     .upload button:hover {
-      background: var(--accent-dark);
+      background: var(--accent);
+      color: var(--text-light);
     }
+    .upload .error { color: var(--error-color); margin-top:1rem }
+
+    /* Files List Card */
+    .files-list .error { color: var(--error-color); margin-bottom:1rem }
+    .files-list .success { color: var(--success-color); margin-bottom:1rem }
     .files-list table {
-      width: 100%;
-      border-collapse: collapse;
+      width:100%;
+      border-collapse:collapse;
     }
     .files-list th, .files-list td {
-      padding: 0.75rem;
-      text-align: left;
-      border-bottom: 1px solid rgba(255,255,255,0.1);
-      font-size: 0.95rem;
-      color: var(--text-muted);
+      padding:0.75rem;
+      text-align:left;
+      border-bottom:1px solid rgba(255,255,255,0.1);
+      font-size:0.95rem;
+      color:var(--text-muted);
     }
-    .files-list th { color: var(--text-light); }
-    .files-list tbody tr:hover {
-      background: rgba(255,255,255,0.05);
+    .files-list th { color:var(--text-light) }
+    .files-list tr:hover { background:rgba(255,255,255,0.05) }
+    .btn-action {
+      padding:0.25rem 0.75rem;
+      margin-right:0.5rem;
+      border:none;
+      border-radius:50px;
+      font-size:0.9rem;
+      font-weight:600;
+      cursor:pointer;
+      transition:background 0.3s,color 0.3s;
+      text-decoration:none;
+      display:inline-block;
     }
-    .files-list a {
-      color: var(--accent);
-      font-weight: 500;
-      transition: color 0.3s;
-      text-decoration: none;
+    .btn-download {
+      background: var(--accent);
+      color: var(--text-light);
     }
-    .files-list a:hover {
-      color: var(--accent-dark);
+    .btn-download:hover {
+      background: var(--accent-dark);
     }
-    .files-list .btn-delete {
-      background: none;
-      border: none;
-      color: var(--accent);
-      cursor: pointer;
-      font-size: 0.95rem;
-      text-decoration: underline;
-      margin-left: 0.5rem;
-      padding: 0;
+    .btn-delete {
+      background: var(--error-color);
+      color: var(--text-light);
     }
-    .error { color: #e74c3c; margin-bottom: 1rem; }
-    .success { color: #2ecc71; margin-bottom: 1rem; }
-    .metrics .metric-value {
-      font-size: 2.5rem;
-      font-weight: 600;
-      margin-top: 0.5rem;
+    .btn-delete:hover {
+      background: #c0392b;
+    }
+
+    /* Metrics Card */
+    .metrics {
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+    }
+    .metric-value {
+      font-size:3rem;
+      font-weight:600;
+      margin-top:0.5rem;
     }
   </style>
 </head>
@@ -154,15 +181,20 @@ $fileCount = count($files);
   <div class="dashboard-grid">
     <!-- Bienvenida -->
     <div class="card welcome">
-      <h2>Bienvenido, usuario #<?= htmlspecialchars($userId) ?></h2>
+      <div class="welcome-header">
+        <h2>Bienvenido, usuario #<?= htmlspecialchars($userId) ?></h2>
+        <a href="logout.php" class="btn-logout">Cerrar sesión</a>
+      </div>
       <p>Administra tus archivos de manera sencilla.</p>
-      <a class="btn-logout" href="logout.php">Cerrar sesión</a>
     </div>
     <!-- Subir archivo -->
     <div class="card upload">
       <h2>Subir archivo</h2>
       <form action="upload.php" method="POST" enctype="multipart/form-data">
-        <input type="file" name="file" required>
+        <label class="file-btn">
+          Seleccionar archivo
+          <input type="file" name="file" required>
+        </label>
         <button type="submit">Subir</button>
       </form>
       <?php if ($uploadError): ?>
@@ -191,10 +223,10 @@ $fileCount = count($files);
             <td><?= htmlspecialchars($f['filename']) ?></td>
             <td><?= htmlspecialchars(substr($f['uploaded_at'], 0, 19)) ?></td>
             <td>
-              <a href="/uploads/<?= urlencode($f['path']) ?>" download>Descargar</a>
+              <a href="/uploads/<?= urlencode($f['path']) ?>" download class="btn-action btn-download">Descargar</a>
               <form action="delete.php" method="POST" style="display:inline">
                 <input type="hidden" name="file_id" value="<?= (int)$f['id'] ?>">
-                <button type="submit" class="btn-delete">Eliminar</button>
+                <button type="submit" class="btn-action btn-delete">Eliminar</button>
               </form>
             </td>
           </tr>
