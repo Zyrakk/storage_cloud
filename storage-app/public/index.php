@@ -133,79 +133,66 @@ if (isset($_SESSION['user_id'])) {
     /* Ajustes generales para móvil */
     @media (max-width: 768px) {
       header {
-        padding: 1rem 0;
+        padding: 1.25rem 0;
       }
       .navbar {
         padding: 0 1rem;
-        align-items: center;
       }
 
-      /* Menú horizontal scrollable */
+      /* Menú inline-scrollable */
       .nav-links {
         display: flex !important;
         flex-direction: row !important;
         flex-wrap: nowrap;
         overflow-x: auto;
         -webkit-overflow-scrolling: touch;
-        gap: 0.75rem;
-        background: rgba(0,0,0,0.6);
+        gap: 0.5rem;
         margin: 0 1rem;
-        padding: 1rem;
-        border-radius: 8px;
+        padding: 0.75rem 0;
+        background: transparent;
+      }
+      .nav-links li {
+        flex: 0 0 auto;
       }
       .nav-links::-webkit-scrollbar {
         display: none;
       }
 
-      /* Ocultar links no-btn y full-width en botones */
-      .nav-links li a:not(.btn) { display: none; }
+      /* Solo los botones y ocupar ancho suficiente */
+      .nav-links li a:not(.btn) {
+        display: none;
+      }
       .nav-links .btn {
-        flex: 1 0 auto;
-        text-align: center;
-        padding: 0.75rem 1rem;
+        flex: none;
+        padding: 0.6rem 1rem;
         line-height: 1.2;
+        white-space: nowrap;
       }
 
-      /* Hero */
+      /* Hero como antes */
       .hero {
         flex-direction: column;
         padding: 6rem 1rem 2rem;
-        gap: 1.5rem;
+        gap: 1rem;
       }
-      .hero-content {
-        text-align: center;
-      }
-      .hero-content h1 { font-size: 2rem; }
-      .hero-content p { font-size: 1rem; }
       .hero-content .btn {
-        display: block;
-        width: 100%;
-        margin: 0 0 1rem;
-      }
-      .hero-image {
-        order: -1; max-width: 100%;
+        margin-bottom: 0.75rem;
       }
 
-      /* Features en columna */
+      /* Features */
       .features {
         padding: 2rem 1rem;
       }
       .feature-grid {
         grid-template-columns: 1fr !important;
-        gap: 1rem;
       }
-      .icon-wrapper {
-        width: 120px; height: 120px;
-      }
-      .feature h3 { font-size: 1.125rem; }
-      .feature p { font-size: 0.9rem; }
 
       /* Footer */
       footer {
         padding: 1rem;
-        font-size: 0.8rem;
       }
     }
+
 
   </style>
 </head>
