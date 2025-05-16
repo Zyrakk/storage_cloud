@@ -132,13 +132,15 @@ if (isset($_SESSION['user_id'])) {
 
     /* Ajustes generales para móvil */
     @media (max-width: 768px) {
-      /* Navbar: apilar y ensanchar los enlaces */
-      .navbar {
-        flex-direction: row;
-        justify-content: space-between;
-        align-items: center;
-        padding: 1rem;
+      header {
+        padding: 1rem 0;
       }
+      .navbar {
+        padding: 0 1rem;
+        align-items: center;
+      }
+
+      /* Menú horizontal scrollable */
       .nav-links {
         display: flex !important;
         flex-direction: row !important;
@@ -146,33 +148,25 @@ if (isset($_SESSION['user_id'])) {
         overflow-x: auto;
         -webkit-overflow-scrolling: touch;
         gap: 0.75rem;
-        background: transparent;
-        margin: 0;
-        padding: 0;
+        background: rgba(0,0,0,0.6);
+        margin: 0 1rem;
+        padding: 1rem;
+        border-radius: 8px;
       }
-      .nav-links li {
-        flex: 0 0 auto;
-      }
-      .nav-links li a,
-      .nav-links .btn {
-        white-space: nowrap;
-      }
-      /* Esconder la scrollbar */
       .nav-links::-webkit-scrollbar {
         display: none;
       }
-      /* Sólo mostrar los botones en móvil */
-      .nav-links li a:not(.btn) {
-        display: none;
-      }
-      /* Asegurarnos de que los botones ocupen todo el ancho */
-      .nav-links .btn,
-      .nav-links .btn.primary {
+
+      /* Ocultar links no-btn y full-width en botones */
+      .nav-links li a:not(.btn) { display: none; }
+      .nav-links .btn {
         flex: 1 0 auto;
         text-align: center;
+        padding: 0.75rem 1rem;
+        line-height: 1.2;
       }
 
-      /* Hero: columna y ajuste de padding */
+      /* Hero */
       .hero {
         flex-direction: column;
         padding: 6rem 1rem 2rem;
@@ -181,23 +175,18 @@ if (isset($_SESSION['user_id'])) {
       .hero-content {
         text-align: center;
       }
-      .hero-content h1 {
-        font-size: 2rem;
-      }
-      .hero-content p {
-        font-size: 1rem;
-      }
+      .hero-content h1 { font-size: 2rem; }
+      .hero-content p { font-size: 1rem; }
       .hero-content .btn {
         display: block;
         width: 100%;
         margin: 0 0 1rem;
       }
       .hero-image {
-        max-width: 100%;
-        order: -1; /* opción: imagen arriba */
+        order: -1; max-width: 100%;
       }
 
-      /* Features en una sola columna */
+      /* Features en columna */
       .features {
         padding: 2rem 1rem;
       }
@@ -205,26 +194,19 @@ if (isset($_SESSION['user_id'])) {
         grid-template-columns: 1fr !important;
         gap: 1rem;
       }
-      .feature {
-        padding: 2rem 1rem;
-      }
       .icon-wrapper {
-        width: 120px;
-        height: 120px;
+        width: 120px; height: 120px;
       }
-      .feature h3 {
-        font-size: 1.125rem;
-      }
-      .feature p {
-        font-size: 0.9rem;
-      }
+      .feature h3 { font-size: 1.125rem; }
+      .feature p { font-size: 0.9rem; }
 
-      /* Footer más compacto */
+      /* Footer */
       footer {
         padding: 1rem;
         font-size: 0.8rem;
       }
     }
+
   </style>
 </head>
 <body>
