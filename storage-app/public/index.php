@@ -134,27 +134,34 @@ if (isset($_SESSION['user_id'])) {
     @media (max-width: 768px) {
       /* Navbar: apilar y ensanchar los enlaces */
       .navbar {
-        flex-direction: column;
-        align-items: flex-start;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
         padding: 1rem;
       }
       .nav-links {
-        flex-direction: column;
-        width: 100%;
-        margin: 1rem 0 0;
-        gap: 0.5rem;
-        background: rgba(0,0,0,0.5);
-        padding: 1rem;
-        border-radius: 8px;
+        display: flex !important;
+        flex-direction: row !important;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        gap: 0.75rem;
+        background: transparent;
+        margin: 0;
+        padding: 0;
       }
       .nav-links li {
-        width: 100%;
+        flex: 0 0 auto;
       }
+      .nav-links li a,
       .nav-links .btn {
-        width: 100%;
-        text-align: center;
+        white-space: nowrap;
       }
-
+      /* Opcional: esconder la scrollbar */
+      .nav-links::-webkit-scrollbar {
+        display: none;
+      }
+      
       /* Hero: columna y ajuste de padding */
       .hero {
         flex-direction: column;
