@@ -192,6 +192,9 @@ $quotaGB = round(USER_QUOTA_BYTES / (1024 ** 3), 2);
   </style>
 </head>
 <body>
+  <script>window.loaderStart = Date.now();</script>
+  <div id="loader-overlay"><div class="loader-text">STORAGE</div></div>
+
   <div class="dashboard-grid">
     <!-- Bienvenida -->
     <div class="card welcome">
