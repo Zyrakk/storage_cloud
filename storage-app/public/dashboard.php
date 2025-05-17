@@ -164,10 +164,17 @@ $usedPercent = $quotaGB > 0 ? min(100, round($usedGB / $quotaGB * 100)) : 0;
       <div class="card upload">
         <h2>Subir archivo</h2>
         <form action="upload.php" method="POST" enctype="multipart/form-data">
-          <label class="file-btn">Seleccionar archivo<input type="file" name="file" required></label>
+          <label class="file-btn">
+            Seleccionar archivo
+            <input id="file-input" type="file" name="file" required>
+          </label>
+          <!-- File name -->
+          <div id="file-name" style="margin:0.5rem 0; color: var(--clr-light); font-size:0.9rem;"></div>
           <button type="submit">Subir</button>
         </form>
-        <?php if ($uploadError): ?><p class="error"><?= htmlspecialchars($uploadError) ?></p><?php endif; ?>
+        <?php if ($uploadError): ?>
+          <p class="error"><?= htmlspecialchars($uploadError) ?></p>
+        <?php endif; ?>
       </div>
       <!-- Metrics -->
       <div class="card metrics">
@@ -185,6 +192,7 @@ $usedPercent = $quotaGB > 0 ? min(100, round($usedGB / $quotaGB * 100)) : 0;
     </div>
   </div>
   <script>
+    // Loader
     window.addEventListener('load', () => {
       const MIN_DURATION = 2000;
       const elapsed = Date.now() - window.loaderStart;
@@ -194,6 +202,17 @@ $usedPercent = $quotaGB > 0 ? min(100, round($usedGB / $quotaGB * 100)) : 0;
         loader.style.opacity = '0';
         setTimeout(() => loader.style.display = 'none', 500);
       }, delay);
+    });
+
+    // Mostrar nombre de archivo seleccionado
+    const input = document.getElementById('file-input');
+    const label = document.getElementById('file-name');
+    input.addEventListener('change', () => {
+      if (!input.files || input.files.length === 0) {
+        label.textContent = '';
+        return;
+      }
+      label.textContent = `Seleccionado: ${input.files[0].name}`;
     });
   </script>
 </body>
