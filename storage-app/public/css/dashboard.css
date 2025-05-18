@@ -1,4 +1,3 @@
-/* dashboard.css */
 :root {
   --gradient-bg: linear-gradient(135deg, #0b0e13, #161a22);
   --card-bg: rgba(255,255,255,0.04);
@@ -44,7 +43,7 @@ body {
   justify-content:space-between;
   align-items:center;
 }
-h1 { font-size:2rem; margin-bottom:1rem }
+h1 { font-size:2rem; }
 .btn-logout {
   padding:0.5rem 1rem;
   border:2px solid var(--accent);
@@ -76,13 +75,16 @@ th, td {
 th { color:var(--text-light) }
 tr:hover { background:rgba(255,255,255,0.05) }
 
-/* Action cell & menu */
+/* Kebab menu & action menu */
 .action-cell {
   position: relative;
-  width: 2.5rem;
+  width:2.5rem;
 }
 .btn-menu {
-  padding:0.3rem;
+  background:transparent;
+  border:none;
+  cursor:pointer;
+  padding:0.2rem;
 }
 .btn-menu i {
   font-size:1.2rem;
@@ -94,36 +96,36 @@ tr:hover { background:rgba(255,255,255,0.05) }
 }
 .action-menu {
   position:absolute;
-  top:2.4rem;
+  top:2.2rem;
   right:0;
   background:#1e242e;
   border-radius:8px;
   box-shadow:0 8px 24px rgba(0,0,0,0.7);
   display:none;
   z-index:100;
-  min-width:140px;
+  min-width:160px;
 }
 .action-menu.open {
   display:block;
 }
 .action-menu a,
-.action-menu form > button,
+.action-menu form>button,
 .action-menu button.share-btn {
   display:flex;
   align-items:center;
   gap:0.5rem;
   padding:0.6rem 1rem;
-  font-size:0.9rem;
+  font-size:0.95rem;
   color:var(--text-light);
   background:transparent;
   border:none;
-  text-decoration:none;
   width:100%;
   cursor:pointer;
   transition:background 0.2s;
+  text-decoration:none;
 }
 .action-menu a:hover,
-.action-menu form > button:hover,
+.action-menu form>button:hover,
 .action-menu button.share-btn:hover {
   background:rgba(255,255,255,0.05);
 }
@@ -142,7 +144,8 @@ tr:hover { background:rgba(255,255,255,0.05) }
   display:flex;
   align-items:center;
   justify-content:center;
-  padding:0.6rem;
+  gap:0.5rem;
+  padding:0.6rem 1rem;
   border:2px solid var(--accent);
   background:var(--accent);
   color:var(--text-light);
@@ -152,7 +155,6 @@ tr:hover { background:rgba(255,255,255,0.05) }
   transition:background 0.3s;
 }
 .file-btn:hover { background:var(--accent-dark) }
-.file-btn i { margin-right:0.5rem; }
 .file-btn input { display:none; }
 .file-name-display {
   margin:0.5rem 0;
@@ -160,6 +162,9 @@ tr:hover { background:rgba(255,255,255,0.05) }
   color:var(--text-light);
 }
 .btn-upload-submit {
+  display:flex;
+  align-items:center;
+  justify-content:center;
   background:transparent;
   border:2px solid var(--accent);
   color:var(--accent);
@@ -185,10 +190,7 @@ tr:hover { background:rgba(255,255,255,0.05) }
   margin-bottom:0.5rem;
   font-size:1.5rem;
 }
-.stat-group {
-  width:100%;
-  text-align:center;
-}
+.stat-group { width:100%; text-align:center; }
 .stat-label {
   color:var(--text-muted);
   font-size:0.9rem;
@@ -207,13 +209,13 @@ tr:hover { background:rgba(255,255,255,0.05) }
   margin-top:1rem;
 }
 .quota-fill {
-  width:0; /* se ajusta inline */
+  width:0; /* inyectado inline */
   height:100%;
   background:var(--quota-fill);
   transition:width 0.5s ease;
 }
 
-/* Share Modal */
+/* Share Modal (opaco y espacioso) */
 #share-modal {
   position:fixed;
   inset:0;
@@ -228,64 +230,61 @@ tr:hover { background:rgba(255,255,255,0.05) }
 }
 .modal-content {
   background:#1e242e;
-  padding:2rem;
+  padding:2.5rem 2rem;
   border-radius:16px;
   box-shadow:0 20px 60px rgba(0,0,0,0.8);
-  width:400px;
+  width:420px;
   max-width:90%;
-  text-align:center;
+  text-align:left;
   position:relative;
 }
 .modal-close {
   position:absolute;
   top:0.5rem;
   right:0.5rem;
-  background:none;
+  background:transparent;
   border:none;
-  font-size:1.4rem;
+  font-size:1.6rem;
   color:var(--text-light);
   cursor:pointer;
 }
 .modal-content h3 {
-  margin-bottom:1rem;
-  font-size:1.25rem;
+  margin-bottom:1.5rem;
+  font-size:1.3rem;
   color:var(--text-light);
 }
 .modal-content label {
   display:flex;
   justify-content:space-between;
   align-items:center;
-  margin:0.75rem 0;
+  margin:1rem 0;
   color:var(--text-light);
-  font-size:0.95rem;
+  font-size:1rem;
 }
 .modal-content select,
 .modal-content input[type="number"] {
-  padding:0.4rem;
+  padding:0.6rem;
   border:none;
   border-radius:6px;
   background:#2a313d;
   color:var(--text-light);
-  font-size:0.9rem;
+  font-size:1rem;
 }
 .modal-buttons {
-  margin-top:1rem;
-  display:flex;
-  gap:1rem;
+  margin-top:1.5rem;
+  text-align:center;
 }
-.modal-buttons button {
-  flex:1;
-  padding:0.6rem;
+.modal-buttons .btn-generate {
+  padding:0.8rem 2rem;
+  background:var(--success-color);
   border:none;
   border-radius:50px;
   font-weight:600;
-  color:var(--text-light);
+  color:#fff;
   cursor:pointer;
+  transition:background 0.3s;
 }
-.btn-generate {
-  background:var(--success-color);
-}
-.btn-generate:hover {
+.modal-buttons .btn-generate:hover {
   background:#27ae60;
 }
 

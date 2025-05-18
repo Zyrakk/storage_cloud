@@ -45,7 +45,7 @@ $usedPercent = $quotaGB > 0 ? min(100, round($usedGB / $quotaGB * 100)) : 0;
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Mi Panel · Storage</title>
-  <!-- Google Font & FontAwesome -->
+  <!-- Fonts & Icons -->
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <!-- Loader & Dashboard CSS -->
@@ -77,7 +77,6 @@ $usedPercent = $quotaGB > 0 ? min(100, round($usedGB / $quotaGB * 100)) : 0;
         </label>
         <div class="modal-buttons">
           <button type="submit" class="btn-generate">Generar</button>
-          <button type="button" class="modal-close">Cancelar</button>
         </div>
       </form>
     </div>
@@ -112,8 +111,8 @@ $usedPercent = $quotaGB > 0 ? min(100, round($usedGB / $quotaGB * 100)) : 0;
             <td><?= htmlspecialchars(substr($f['uploaded_at'], 0, 19)) ?></td>
             <td class="action-cell">
               <!-- Kebab menu trigger -->
-              <button class="btn-action btn-menu" data-file-id="<?= $f['id'] ?>" title="Más">
-                <i class="fa-solid fa-ellipsis-vertical"></i>
+              <button class="btn-menu" data-file-id="<?= $f['id'] ?>" title="Más">
+                <i class="fa-solid fa-circle-ellipsis-vertical"></i>
               </button>
               <!-- Hidden action menu -->
               <div class="action-menu" id="menu-<?= $f['id'] ?>">
@@ -144,11 +143,11 @@ $usedPercent = $quotaGB > 0 ? min(100, round($usedGB / $quotaGB * 100)) : 0;
         <h2>Subir archivo</h2>
         <form action="upload.php" method="POST" enctype="multipart/form-data">
           <label class="file-btn">
-            <i class="fa-solid fa-file-import"></i>
+            <i class="fa-solid fa-file-import"></i> Seleccionar
             <input id="file-input" type="file" name="file" required>
           </label>
           <div id="file-name" class="file-name-display"></div>
-          <button type="submit" class="btn-action btn-upload-submit" title="Subir">
+          <button type="submit" class="btn-upload-submit" title="Subir">
             <i class="fa-solid fa-cloud-arrow-up"></i>
           </button>
         </form>
@@ -195,15 +194,17 @@ $usedPercent = $quotaGB > 0 ? min(100, round($usedGB / $quotaGB * 100)) : 0;
     // Kebab menu interactions
     document.querySelectorAll('.btn-menu').forEach(btn => {
       btn.addEventListener('click', e => {
-        const id    = btn.dataset.fileId;
-        const menu  = document.getElementById('menu-'+id);
-        document.querySelectorAll('.action-menu.open').forEach(m => m.classList.remove('open'));
+        const id   = btn.dataset.fileId;
+        const menu = document.getElementById('menu-'+id);
+        document.querySelectorAll('.action-menu.open')
+                .forEach(m => m.classList.remove('open'));
         menu.classList.toggle('open');
         e.stopPropagation();
       });
     });
     document.addEventListener('click', () => {
-      document.querySelectorAll('.action-menu.open').forEach(m => m.classList.remove('open'));
+      document.querySelectorAll('.action-menu.open')
+              .forEach(m => m.classList.remove('open'));
     });
 
     // Share modal logic
@@ -222,9 +223,9 @@ $usedPercent = $quotaGB > 0 ? min(100, round($usedGB / $quotaGB * 100)) : 0;
         modal.classList.add('active');
       });
     });
-    closeBtns.forEach(btn =>
-      btn.addEventListener('click', () => modal.classList.remove('active'))
-    );
+    closeBtns.forEach(btn => btn.addEventListener('click', () => {
+      modal.classList.remove('active');
+    }));
     expiryType.addEventListener('change', () => {
       expiryValueLbl.style.display = expiryType.value === 'never' ? 'none' : 'block';
     });
