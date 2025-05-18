@@ -112,7 +112,7 @@ $usedPercent = $quotaGB > 0 ? min(100, round($usedGB / $quotaGB * 100)) : 0;
             <td class="action-cell">
               <!-- Kebab menu trigger -->
               <button class="btn-menu" data-file-id="<?= $f['id'] ?>" title="Más">
-                <i class="fa-solid fa-circle-ellipsis-vertical"></i>
+                <i class="fa-solid fa-ellipsis-vertical"></i>
               </button>
               <!-- Hidden action menu -->
               <div class="action-menu" id="menu-<?= $f['id'] ?>">
