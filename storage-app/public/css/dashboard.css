@@ -1,4 +1,4 @@
-/* public/css/dashboard.css */
+/* dashboard.css */
 :root {
   --gradient-bg: linear-gradient(135deg, #0b0e13, #161a22);
   --card-bg: rgba(255,255,255,0.04);
@@ -13,7 +13,7 @@
 }
 *,*::before,*::after { margin:0; padding:0; box-sizing:border-box }
 body {
-  font-family:'Montserrat', sans-serif;
+  font-family:'Montserrat',sans-serif;
   background:var(--gradient-bg);
   color:var(--text-light);
   min-height:100vh;
@@ -37,6 +37,7 @@ body {
   padding:2rem;
   box-shadow:0 16px 48px rgba(0,0,0,0.6);
 }
+/* Welcome */
 .welcome {
   grid-column:1/3;
   display:flex;
@@ -61,7 +62,7 @@ h1 { font-size:2rem; margin-bottom:1rem }
   grid-column:1/2;
   overflow:auto;
 }
-.files-list h2   { margin-bottom:1rem }
+.files-list h2 { margin-bottom:1rem }
 .files-list .error   { color:var(--error-color); margin-bottom:1rem }
 .files-list .success { color:var(--success-color); margin-bottom:1rem }
 table { width:100%; border-collapse:collapse }
@@ -75,41 +76,56 @@ th, td {
 th { color:var(--text-light) }
 tr:hover { background:rgba(255,255,255,0.05) }
 
-/* Action buttons */
-.action-group {
-  display:flex;
-  gap:0.5rem;
-  flex-wrap:wrap;
+/* Action cell & kebab menu */
+.action-cell {
+  position: relative;
+  width: 2.5rem;
 }
-.btn-action {
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
+.btn-menu {
   padding:0.3rem;
-  font-size:1rem;
-  border:none;
-  border-radius:12px;
-  cursor:pointer;
+}
+.btn-menu i {
+  font-size:1.2rem;
+  color:var(--text-muted);
+  transition:color 0.2s;
+}
+.btn-menu:hover i {
   color:var(--text-light);
+}
+.action-menu {
+  position:absolute;
+  top:2.4rem;
+  right:0;
+  background:#1e242e;
+  border-radius:8px;
+  box-shadow:0 8px 24px rgba(0,0,0,0.7);
+  display:none;
+  z-index:100;
+  min-width:140px;
+}
+.action-menu.open {
+  display:block;
+}
+.action-menu a,
+.action-menu form > button,
+.action-menu button.share-btn {
+  display:flex;
+  align-items:center;
+  gap:0.5rem;
+  padding:0.6rem 1rem;
+  font-size:0.9rem;
+  color:var(--text-light);
+  background:transparent;
+  border:none;
+  text-decoration:none;
+  width:100%;
+  cursor:pointer;
   transition:background 0.2s;
 }
-.btn-download {
-  background:var(--accent);
-}
-.btn-download:hover {
-  background:var(--accent-dark);
-}
-.btn-delete {
-  background:var(--error-color);
-}
-.btn-delete:hover {
-  background:#c0392b;
-}
-.btn-share {
-  background:var(--success-color);
-}
-.btn-share:hover {
-  background:#27ae60;
+.action-menu a:hover,
+.action-menu form > button:hover,
+.action-menu button.share-btn:hover {
+  background:rgba(255,255,255,0.05);
 }
 
 /* Right column */
@@ -123,18 +139,20 @@ tr:hover { background:rgba(255,255,255,0.05) }
 /* Upload card */
 .upload h2 { margin-bottom:1rem }
 .file-btn {
-  display:inline-block;
+  display:flex;
+  align-items:center;
+  justify-content:center;
   padding:0.6rem;
   border:2px solid var(--accent);
   background:var(--accent);
   color:var(--text-light);
   border-radius:50px;
   cursor:pointer;
-  text-align:center;
   width:100%;
   transition:background 0.3s;
 }
 .file-btn:hover { background:var(--accent-dark) }
+.file-btn i { margin-right:0.5rem; }
 .file-btn input { display:none; }
 .file-name-display {
   margin:0.5rem 0;
@@ -189,13 +207,13 @@ tr:hover { background:rgba(255,255,255,0.05) }
   margin-top:1rem;
 }
 .quota-fill {
-  width:0;
+  width:0; /* se ajusta inline */
   height:100%;
   background:var(--quota-fill);
   transition:width 0.5s ease;
 }
 
-/* Share Modal */
+/* Share Modal (opaco y más grande) */
 #share-modal {
   position:fixed;
   inset:0;
@@ -209,12 +227,12 @@ tr:hover { background:rgba(255,255,255,0.05) }
   display:flex;
 }
 .modal-content {
-  background:var(--card-bg);
-  padding:2rem 1.5rem;
+  background:#1e242e;
+  padding:2rem;
   border-radius:16px;
   box-shadow:0 20px 60px rgba(0,0,0,0.8);
-  max-width:360px;
-  width:90%;
+  width:400px;
+  max-width:90%;
   text-align:center;
   position:relative;
 }
@@ -231,6 +249,7 @@ tr:hover { background:rgba(255,255,255,0.05) }
 .modal-content h3 {
   margin-bottom:1rem;
   font-size:1.25rem;
+  color:var(--text-light);
 }
 .modal-content label {
   display:flex;
@@ -245,7 +264,7 @@ tr:hover { background:rgba(255,255,255,0.05) }
   padding:0.4rem;
   border:none;
   border-radius:6px;
-  background:rgba(255,255,255,0.1);
+  background:#2a313d;
   color:var(--text-light);
   font-size:0.9rem;
 }
@@ -262,6 +281,12 @@ tr:hover { background:rgba(255,255,255,0.05) }
   font-weight:600;
   color:var(--text-light);
   cursor:pointer;
+}
+.btn-generate {
+  background:var(--success-color);
+}
+.btn-generate:hover {
+  background:#27ae60;
 }
 
 /* Responsive */

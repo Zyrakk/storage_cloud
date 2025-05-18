@@ -1,3 +1,4 @@
+<!-- dashboard.php -->
 <?php
 require __DIR__ . '/src/init.php';
 
@@ -96,7 +97,9 @@ $usedPercent = $quotaGB > 0 ? min(100, round($usedGB / $quotaGB * 100)) : 0;
       <?php if ($deleteError): ?><p class="error"><?= htmlspecialchars($deleteError) ?></p><?php endif; ?>
       <?php if ($deleteSuccess): ?><p class="success"><?= htmlspecialchars($deleteSuccess) ?></p><?php endif; ?>
       <?php if ($shareUrl): ?>
-        <p class="success">Enlace: <a href="<?= htmlspecialchars($shareUrl) ?>" target="_blank"><?= htmlspecialchars($shareUrl) ?></a></p>
+        <p class="success">
+          Enlace: <a href="<?= htmlspecialchars($shareUrl) ?>" target="_blank"><?= htmlspecialchars($shareUrl) ?></a>
+        </p>
       <?php endif; ?>
 
       <table>
@@ -108,19 +111,24 @@ $usedPercent = $quotaGB > 0 ? min(100, round($usedGB / $quotaGB * 100)) : 0;
           <tr>
             <td><?= htmlspecialchars($f['filename']) ?></td>
             <td><?= htmlspecialchars(substr($f['uploaded_at'], 0, 19)) ?></td>
-            <td>
-              <div class="action-group">
-                <a href="/uploads/<?= urlencode($f['path']) ?>" download class="btn-action btn-download" title="Descargar">
-                  <i class="fa-solid fa-download"></i>
+            <td class="action-cell">
+              <!-- Kebab menu trigger -->
+              <button class="btn-action btn-menu" data-file-id="<?= $f['id'] ?>" title="Más">
+                <i class="fa-solid fa-ellipsis-vertical"></i>
+              </button>
+              <!-- Hidden action menu -->
+              <div class="action-menu" id="menu-<?= $f['id'] ?>">
+                <a href="/uploads/<?= urlencode($f['path']) ?>" download>
+                  <i class="fa-solid fa-download"></i> Descargar
                 </a>
-                <form id="delete-form-<?= $f['id'] ?>" action="delete.php" method="POST" style="display:none;">
+                <form id="del-<?= $f['id'] ?>" action="delete.php" method="POST">
                   <input type="hidden" name="file_id" value="<?= (int)$f['id'] ?>">
+                  <button type="submit">
+                    <i class="fa-solid fa-trash-alt"></i> Eliminar
+                  </button>
                 </form>
-                <button onclick="document.getElementById('delete-form-<?= $f['id'] ?>').submit();" class="btn-action btn-delete" title="Eliminar">
-                  <i class="fa-solid fa-trash-alt"></i>
-                </button>
-                <button class="btn-action btn-share" data-file-id="<?= $f['id'] ?>" title="Compartir">
-                  <i class="fa-solid fa-share-from-square"></i>
+                <button class="share-btn" data-file-id="<?= $f['id'] ?>">
+                  <i class="fa-solid fa-share-from-square"></i> Compartir
                 </button>
               </div>
             </td>
@@ -169,7 +177,7 @@ $usedPercent = $quotaGB > 0 ? min(100, round($usedGB / $quotaGB * 100)) : 0;
     window.addEventListener('load', () => {
       const MIN_DURATION = 2000;
       const elapsed = Date.now() - window.loaderStart;
-      const delay = Math.max(0, MIN_DURATION - elapsed);
+      const delay   = Math.max(0, MIN_DURATION - elapsed);
       setTimeout(() => {
         const l = document.getElementById('loader-overlay');
         l.style.opacity = '0';
@@ -185,25 +193,39 @@ $usedPercent = $quotaGB > 0 ? min(100, round($usedGB / $quotaGB * 100)) : 0;
         : '';
     });
 
+    // Kebab menu interactions
+    document.querySelectorAll('.btn-menu').forEach(btn => {
+      btn.addEventListener('click', e => {
+        const id    = btn.dataset.fileId;
+        const menu  = document.getElementById('menu-'+id);
+        document.querySelectorAll('.action-menu.open').forEach(m => m.classList.remove('open'));
+        menu.classList.toggle('open');
+        e.stopPropagation();
+      });
+    });
+    document.addEventListener('click', () => {
+      document.querySelectorAll('.action-menu.open').forEach(m => m.classList.remove('open'));
+    });
+
     // Share modal logic
-    const modal           = document.getElementById('share-modal');
-    const shareBtns       = document.querySelectorAll('.btn-share');
-    const closeBtns       = modal.querySelectorAll('.modal-close');
-    const fileIdInput     = document.getElementById('share-file-id');
-    const expiryType      = document.getElementById('expiry-type');
-    const expiryValueLbl  = document.getElementById('expiry-value-label');
+    const modal          = document.getElementById('share-modal');
+    const shareBtns      = document.querySelectorAll('.share-btn');
+    const closeBtns      = modal.querySelectorAll('.modal-close');
+    const fileIdInput    = document.getElementById('share-file-id');
+    const expiryType     = document.getElementById('expiry-type');
+    const expiryValueLbl = document.getElementById('expiry-value-label');
 
     shareBtns.forEach(btn => {
       btn.addEventListener('click', () => {
-        fileIdInput.value = btn.getAttribute('data-file-id');
+        fileIdInput.value = btn.dataset.fileId;
         expiryType.value = 'never';
         expiryValueLbl.style.display = 'none';
         modal.classList.add('active');
       });
     });
-    closeBtns.forEach(btn => btn.addEventListener('click', () => {
-      modal.classList.remove('active');
-    }));
+    closeBtns.forEach(btn =>
+      btn.addEventListener('click', () => modal.classList.remove('active'))
+    );
     expiryType.addEventListener('change', () => {
       expiryValueLbl.style.display = expiryType.value === 'never' ? 'none' : 'block';
     });
