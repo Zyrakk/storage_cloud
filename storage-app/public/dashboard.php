@@ -22,13 +22,10 @@ $shareUrl      = $_SESSION['share_url']      ?? null; unset($_SESSION['share_url
 
 // Fetch files
 $stmt = $pdo->prepare(
-    'SELECT id, filename, path, uploaded_at, size
-     FROM files
-     WHERE user_id = ?
-     ORDER BY uploaded_at DESC'
+    'SELECT id, filename, path, uploaded_at, size FROM files WHERE user_id = ? ORDER BY uploaded_at DESC'
 );
 $stmt->execute([$userId]);
-$files     = $stmt->fetchAll();
+$files = $stmt->fetchAll();
 $fileCount = count($files);
 
 // Calculate used storage
@@ -45,9 +42,8 @@ $usedPercent = $quotaGB > 0 ? min(100, round($usedGB / $quotaGB * 100)) : 0;
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Mi Panel · Storage</title>
-  <!-- Google Font -->
+  <!-- Google Font & CSS -->
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
-  <!-- Loader & Dashboard CSS -->
   <link rel="stylesheet" href="./css/loader.css">
   <link rel="stylesheet" href="./css/dashboard.css">
 </head>
@@ -75,8 +71,8 @@ $usedPercent = $quotaGB > 0 ? min(100, round($usedGB / $quotaGB * 100)) : 0;
           <input type="number" name="expiry_value" id="expiry-value" min="1" value="1">
         </label>
         <div class="modal-buttons">
-          <button type="submit" style="background:var(--success-color)">Generar</button>
-          <button type="button" class="modal-close" style="background:var(--error-color)">Cancelar</button>
+          <button type="submit" class="btn-share-generate">Generar</button>
+          <button type="button" class="modal-close">Cancelar</button>
         </div>
       </form>
     </div>
@@ -95,10 +91,9 @@ $usedPercent = $quotaGB > 0 ? min(100, round($usedGB / $quotaGB * 100)) : 0;
       <?php if ($deleteError): ?><p class="error"><?= htmlspecialchars($deleteError) ?></p><?php endif; ?>
       <?php if ($deleteSuccess): ?><p class="success"><?= htmlspecialchars($deleteSuccess) ?></p><?php endif; ?>
       <?php if ($shareUrl): ?>
-        <p class="success">
-          Enlace: <a href="<?= htmlspecialchars($shareUrl) ?>" target="_blank"><?= htmlspecialchars($shareUrl) ?></a>
-        </p>
+        <p class="success">Enlace: <a href="<?= htmlspecialchars($shareUrl) ?>" target="_blank"><?= htmlspecialchars($shareUrl) ?></a></p>
       <?php endif; ?>
+
       <table>
         <thead>
           <tr><th>Archivo</th><th>Fecha</th><th>Acción</th></tr>
@@ -109,12 +104,20 @@ $usedPercent = $quotaGB > 0 ? min(100, round($usedGB / $quotaGB * 100)) : 0;
             <td><?= htmlspecialchars($f['filename']) ?></td>
             <td><?= htmlspecialchars(substr($f['uploaded_at'], 0, 19)) ?></td>
             <td>
-              <a href="/uploads/<?= urlencode($f['path']) ?>" download class="btn-action btn-download">Descargar</a>
-              <form action="delete.php" method="POST" style="display:inline">
-                <input type="hidden" name="file_id" value="<?= (int)$f['id'] ?>">
-                <button type="submit" class="btn-action btn-delete">Eliminar</button>
-              </form>
-              <button class="btn-action btn-share" data-file-id="<?= $f['id'] ?>">🔗</button>
+              <div class="action-group">
+                <a href="/uploads/<?= urlencode($f['path']) ?>" download class="btn-action btn-download">📥 Descargar</a>
+                <form id="delete-form-<?= $f['id'] ?>" action="delete.php" method="POST" style="display:none;">
+                  <input type="hidden" name="file_id" value="<?= (int)$f['id'] ?>">
+                </form>
+                <button onclick="document.getElementById('delete-form-<?= $f['id'] ?>').submit();" class="btn-action btn-delete">❌ Eliminar</button>
+                <button class="btn-action btn-share" data-file-id="<?= $f['id'] ?>" aria-label="Compartir">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M4 12v7a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7"/>
+                    <polyline points="16 6 12 2 8 6"/>
+                    <line x1="12" y1="2" x2="12" y2="15"/>
+                  </svg>
+                </button>
+              </div>
             </td>
           </tr>
           <?php endforeach; ?>
@@ -132,11 +135,12 @@ $usedPercent = $quotaGB > 0 ? min(100, round($usedGB / $quotaGB * 100)) : 0;
             Seleccionar archivo
             <input id="file-input" type="file" name="file" required>
           </label>
-          <div id="file-name" style="margin:0.5rem 0;color:var(--text-light);font-size:0.9rem;"></div>
-          <button type="submit">Subir</button>
+          <div id="file-name" class="file-name-display"></div>
+          <button type="submit" class="btn-action btn-upload-submit">Subir</button>
         </form>
         <?php if ($uploadError): ?><p class="error"><?= htmlspecialchars($uploadError) ?></p><?php endif; ?>
       </div>
+
       <!-- Metrics -->
       <div class="card metrics">
         <h2>Estadísticas</h2>
@@ -148,15 +152,13 @@ $usedPercent = $quotaGB > 0 ? min(100, round($usedGB / $quotaGB * 100)) : 0;
           <div class="stat-label">Espacio utilizado</div>
           <div class="stat-value"><?= $usedGB ?> GB / <?= $quotaGB ?> GB</div>
         </div>
-        <div class="quota-bar">
-          <div class="quota-fill" style="width: <?= $usedPercent ?>%;"></div>
-        </div>
+        <div class="quota-bar"><div class="quota-fill" style="width: <?= $usedPercent ?>%;"></div></div>
       </div>
     </div>
   </div>
 
+  <!-- Scripts -->
   <script>
-    // Loader
     window.addEventListener('load', () => {
       const MIN_DURATION = 2000;
       const elapsed      = Date.now() - window.loaderStart;
@@ -196,8 +198,7 @@ $usedPercent = $quotaGB > 0 ? min(100, round($usedGB / $quotaGB * 100)) : 0;
       modal.classList.remove('active');
     }));
     expiryType.addEventListener('change', () => {
-      expiryValueLbl.style.display =
-        expiryType.value === 'never' ? 'none' : 'block';
+      expiryValueLbl.style.display = expiryType.value === 'never' ? 'none' : 'block';
     });
   </script>
 </body>
