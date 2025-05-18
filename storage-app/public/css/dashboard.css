@@ -76,7 +76,7 @@ th, td {
 th { color:var(--text-light) }
 tr:hover { background:rgba(255,255,255,0.05) }
 
-/* Action cell & kebab menu */
+/* Action cell & menu */
 .action-cell {
   position: relative;
   width: 2.5rem;
@@ -213,7 +213,7 @@ tr:hover { background:rgba(255,255,255,0.05) }
   transition:width 0.5s ease;
 }
 
-/* Share Modal (opaco y más grande) */
+/* Share Modal */
 #share-modal {
   position:fixed;
   inset:0;
