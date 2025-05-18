@@ -13,3 +13,11 @@ CREATE TABLE files (
   size         BIGINT  NOT NULL DEFAULT 0,       -- tamaño en bytes
   uploaded_at  TIMESTAMP NOT NULL DEFAULT now()
 );
+
+CREATE TABLE shares (
+  id           SERIAL PRIMARY KEY,
+  file_id      INTEGER NOT NULL REFERENCES files(id) ON DELETE CASCADE,
+  token        TEXT    UNIQUE NOT NULL,
+  expires_at   TIMESTAMP NULL,         -- NULL = sin caducidad
+  created_at   TIMESTAMP NOT NULL DEFAULT now()
+);
