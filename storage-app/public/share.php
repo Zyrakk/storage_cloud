@@ -47,6 +47,8 @@ if (!isset($_SESSION['user_id']) || $_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
+$pdo = getDb();
+
 $userId     = (int) $_SESSION['user_id'];
 $fileId     = (int) ($_POST['file_id']    ?? 0);
 $expiryType =      $_POST['expiry_type'] ?? 'never';
