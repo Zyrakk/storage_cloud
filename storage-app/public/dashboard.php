@@ -148,7 +148,7 @@ $usedPercent = $quotaGB > 0 ? min(100, round($usedGB / $quotaGB * 100)) : 0;
           </label>
           <div id="file-name" class="file-name-display"></div>
           <button type="submit" class="btn-upload-submit" title="Subir">
-            <i class="fa-solid fa-cloud-arrow-up"></i> Subir
+            <i class="fa-solid fa-cloud-arrow-up"></i>
           </button>
         </form>
         <?php if ($uploadError): ?><p class="error"><?= htmlspecialchars($uploadError) ?></p><?php endif; ?>
