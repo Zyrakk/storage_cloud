@@ -15,7 +15,7 @@ RUN pecl install redis \
     && docker-php-ext-enable redis
 
 # Copia composer.json y genera lock/install
-COPY composer.json ./
+COPY composer.json composer.lock ./
 RUN composer update --no-dev --optimize-autoloader
 
 # Copia el resto de la app
