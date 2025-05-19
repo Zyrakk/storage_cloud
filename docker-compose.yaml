@@ -70,7 +70,7 @@ services:
              while :; do
                certbot renew --webroot -w /var/www/certbot --quiet &&
                nginx -s reload;
-               sleep 12h & wait \$\$!;
+               sleep 12h;
              done"
     depends_on:
       - nginx
