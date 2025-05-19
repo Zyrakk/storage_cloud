@@ -1,6 +1,4 @@
 <?php
-// public/upload.php
-
 require __DIR__ . '/src/init.php';
 
 if (!isset($_SESSION['user_id'])) {
