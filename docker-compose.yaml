@@ -79,7 +79,11 @@ services:
     image: prom/node-exporter:latest
     restart: unless-stopped
     network_mode: host
-    pid: host
+    pid: "host"
+    volumes:
+      - /:/rootfs:ro
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
 
   cadvisor:
     image: gcr.io/cadvisor/cadvisor:latest
