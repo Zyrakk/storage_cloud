@@ -88,6 +88,7 @@ services:
       - --path.rootfs=/rootfs
       - --collector.filesystem.ignored-fs-types=""
       - --collector.filesystem.ignored-mount-points=""
+      - --collector.reboot-required
 
   cadvisor:
     image: gcr.io/cadvisor/cadvisor:latest
