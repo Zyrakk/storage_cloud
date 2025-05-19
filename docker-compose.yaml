@@ -85,10 +85,9 @@ services:
       - /proc:/host/proc:ro
       - /sys:/host/sys:ro
     command:
-      # No ignorar ningún tipo de filesystem (incluye cifs)
-      - '--collector.filesystem.ignored-filesystems=""'
-      # No ignorar ningún punto de montaje
-      - '--collector.filesystem.ignored-mount-points=""'
+      - --path.rootfs=/rootfs
+      - --collector.filesystem.ignored-filesystems=""
+      - --collector.filesystem.ignored-mount-points=""
 
   cadvisor:
     image: gcr.io/cadvisor/cadvisor:latest
