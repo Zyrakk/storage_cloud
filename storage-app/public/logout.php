@@ -8,6 +8,8 @@ if (ini_get("session.use_cookies")) {
 }
 session_destroy();
 
+$activeSessions->dec();
+
 // Redirijo a página inicial
 header('Location: index.php');
 exit;

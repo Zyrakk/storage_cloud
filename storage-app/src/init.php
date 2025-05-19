@@ -32,14 +32,26 @@ $redisAdapter = new RedisAdapter([
 $registry = new CollectorRegistry($redisAdapter);
 
 // ------------------------------------------------------
-// 5) Helper para registrar o recuperar un Counter
+// 5) Helpers
 // ------------------------------------------------------
+
+// Registrar o recuperar un Counter
 function getOrRegisterCounter(string $namespace, string $name, string $help) {
     global $registry;
     try {
         return $registry->registerCounter($namespace, $name, $help);
     } catch (MetricAlreadyRegistered $e) {
         return $registry->getCounter($namespace, $name);
+    }
+}
+
+// Incrementar o reducir un Counter
+function getOrRegisterGauge(string $namespace, string $name, string $help) {
+    global $registry;
+    try {
+        return $registry->registerGauge($namespace, $name, $help);
+    } catch (\Prometheus\Exception\MetricAlreadyRegistered $e) {
+        return $registry->getGauge($namespace, $name);
     }
 }
 
@@ -62,6 +74,18 @@ $totpFail = getOrRegisterCounter(
     'auth',
     'totp_fail',
     'TOTP failures'
+);
+
+$fileUploads = getOrRegisterCounter(
+    'storage',               // namespace
+    'file_uploads_total',    // métrica
+    'Total de archivos subidos'
+);
+
+$activeSessions = getOrRegisterGauge(
+    'auth',
+    'active_sessions',
+    'Número de sesiones activas'
 );
 
 // ------------------------------------------------------

@@ -43,6 +43,8 @@ if (
         // darle permisos de lectura a Nginx
         @chmod($dest, 0644);
 
+        $fileUploads->inc();
+
         // 4) Insertar en la base de datos incluyendo el tamaño
         $pdo = getDb();
         $stmt = $pdo->prepare('

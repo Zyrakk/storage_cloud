@@ -25,11 +25,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $error = 'Código TOTP incorrecto.';
             } else {
                 $totpSuccess->inc();
+                $activeSessions->inc();
                 $_SESSION['user_id'] = $user->id;
                 header('Location: dashboard.php');
                 exit;
             }
         } else {
+            $activeSessions->inc();
             $_SESSION['user_id'] = $user->id;
             header('Location: dashboard.php');
             exit;
