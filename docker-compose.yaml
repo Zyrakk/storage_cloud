@@ -76,7 +76,7 @@ services:
       - nginx
 
   node_exporter:
-    image: prom/node-exporter:latest
+    image: quay.io/prometheus/node-exporter:v1.5.0
     restart: unless-stopped
     network_mode: host
     pid: "host"
