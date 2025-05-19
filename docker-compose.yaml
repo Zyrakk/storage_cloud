@@ -86,7 +86,7 @@ services:
       - /sys:/host/sys:ro
     command:
       - --path.rootfs=/rootfs
-      - --collector.filesystem.ignored-filesystems=""
+      - --collector.filesystem.ignored-fs-types=""
       - --collector.filesystem.ignored-mount-points=""
 
   cadvisor:
