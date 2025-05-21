@@ -5,12 +5,11 @@ use Prometheus\RenderTextFormat;
 
 class Metrics {
     public static function output(): void {
-        global $registry, $activeSessions;
+        global $registry, $activeSessions, $redisAdapter;
 
         // --- Contar sesiones activas desde Redis ---
-        // Obtenemos el adapter Redis y su cliente
-        $adapter = $registry->getAdapter();
-        $redisClient = $adapter->getClient();
+        // Obtenemos el cliente Redis desde el adapter definido en init.php
+        $redisClient = $redisAdapter->getClient();
 
         // Contamos IDs de sesión en el set 'active_sessions'
         $count = $redisClient->sCard('active_sessions');
