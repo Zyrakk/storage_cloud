@@ -241,8 +241,6 @@ if (isset($_SESSION['user_id'])) {
       <ul class="nav-links">
         <li><a href="#">Inicio</a></li>
         <li><a href="#features">Características</a></li>
-        <li><a href="#pricing">Precios</a></li>
-        <li><a href="#contact">Contacto</a></li>
         <li><a class="btn primary" href="register.php">Regístrate</a></li>
         <li><a class="btn" href="login.php">Iniciar sesión</a></li>
       </ul>
