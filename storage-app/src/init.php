@@ -3,6 +3,13 @@
 // Inicialización global: sesión, configuración, autoload, DB y métricas
 session_start();
 
+$redis = new \Redis();
+$redis->connect(getenv('REDIS_HOST'), getenv('REDIS_PORT'));
+$sid = session_id();
+if ($redis->sIsMember('active_sessions', $sid)) {
+    $redis->expire('active_sessions', 30*60);
+}
+
 // 1) Configuración de constantes y parámetros
 require __DIR__ . '/config.php';
 

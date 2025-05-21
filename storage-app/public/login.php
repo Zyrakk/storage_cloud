@@ -3,6 +3,10 @@ require __DIR__ . '/src/init.php';
 use App\User;
 use OTPHP\TOTP;
 
+// Conecta a Redis
+$redis = new \Redis();
+$redis->connect(getenv('REDIS_HOST'), getenv('REDIS_PORT'));
+
 $error = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -25,13 +29,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $error = 'Código TOTP incorrecto.';
             } else {
                 $totpSuccess->inc();
-                $activeSessions->inc();
+                // Añade el ID de sesión al set y ponle TTL de 30 min
+                $sid = session_id();
+                $redis->sAdd('active_sessions', $sid);
+                $redis->expire('active_sessions', 30*60);
+
                 $_SESSION['user_id'] = $user->id;
                 header('Location: dashboard.php');
                 exit;
             }
         } else {
-            $activeSessions->inc();
+            // Añade el ID de sesión al set y ponle TTL de 30 min
+            $sid = session_id();
+            $redis->sAdd('active_sessions', $sid);
+            $redis->expire('active_sessions', 30*60);
+            
             $_SESSION['user_id'] = $user->id;
             header('Location: dashboard.php');
             exit;
