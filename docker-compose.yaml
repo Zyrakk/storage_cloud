@@ -31,7 +31,7 @@ services:
 
       # Upload
       - UPLOAD_PATH=/mnt/remote_storage
-      - MAX_UPLOAD_SIZE=1073741824
+      - MAX_UPLOAD_SIZE=10737418240
     volumes:
       - ./storage-app/public:/var/www/html
       - ./storage-app/src:/var/www/html/src:ro
