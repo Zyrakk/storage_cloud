@@ -18,6 +18,8 @@ if (isset($_SESSION['user_id'])) {
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
   <!-- Loader CSS separado -->
   <link rel="stylesheet" href="./css/loader.css">
+  <!-- Icon -->
+  <link rel="icon" href="./img/favicon.ico">
 
   <style>
     /* Variables de diseño */

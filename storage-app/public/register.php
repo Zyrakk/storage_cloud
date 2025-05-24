@@ -66,7 +66,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Registro · Storage</title>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="./css/loader.css">
+  <!-- Icon -->
+  <link rel="icon" href="./img/favicon.ico">
   <style>
     :root {
       --bg-gradient: linear-gradient(135deg,#0b0e13,#161a22);

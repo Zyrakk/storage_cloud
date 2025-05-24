@@ -48,6 +48,8 @@ $usedPercent = $quotaGB > 0 ? min(100, round($usedGB / $quotaGB * 100)) : 0;
   <!-- Fonts & Icons -->
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Icon -->
+  <link rel="icon" href="./img/favicon.ico">
   <!-- Loader & Dashboard CSS -->
   <link rel="stylesheet" href="./css/loader.css">
   <link rel="stylesheet" href="./css/dashboard.css">

@@ -61,8 +61,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <title>Iniciar sesión · Storage</title>
   <!-- Google Font -->
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
-  <!-- Loader CSS si es necesario -->
-  <link rel="stylesheet" href="./css/loader.css">
+  <!-- Icon -->
+  <link rel="icon" href="./img/favicon.ico">
   <style>
     :root {
       --bg-gradient: linear-gradient(135deg, #0b0e13, #161a22);
