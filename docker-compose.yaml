@@ -38,6 +38,7 @@ services:
       - vendor_data:/var/www/html/vendor
       - ./main:/var/www/main
       - /mnt/remote_storage:/mnt/remote_storage
+      - ./php/conf.d/uploads.ini:/usr/local/etc/php/conf.d/uploads.ini:ro
     expose:
       - "9000"
     depends_on:
