@@ -23,7 +23,7 @@ if (
 
     // 2) Comprobar tamaño máximo por archivo
     if ($_FILES['file']['size'] > MAX_UPLOAD_SIZE) {
-        $_SESSION['upload_error'] = 'El archivo supera el tamaño máximo permitido.';
+        $_SESSION['upload_error'] = 'El archivo supera el tamaño máximo permitido de 1GB.';
         header('Location: dashboard.php');
         exit;
     }
