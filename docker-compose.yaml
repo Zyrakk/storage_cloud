@@ -13,6 +13,9 @@ services:
       - /mnt/remote_storage:/mnt/remote_storage:ro
     depends_on:
       - php
+    networks:
+      - default
+      - nginx-proxy
     restart: unless-stopped
 
   php:
@@ -44,6 +47,8 @@ services:
     depends_on:
       - db
       - redis
+    networks:
+      - default
     restart: unless-stopped
 
   redis:
@@ -104,3 +109,9 @@ services:
 volumes:
   db_data:
   vendor_data:
+
+networks:
+  default:
+    driver: bridge
+  nginx-proxy:
+    external: true
